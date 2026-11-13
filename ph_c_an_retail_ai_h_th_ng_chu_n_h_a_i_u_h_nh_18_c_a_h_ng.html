@@ -1,0 +1,2091 @@
+<!DOCTYPE html>
+<html lang="vi" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phúc An Retail AI — Quản Lý & Phân Tích Dữ Liệu 18 Cửa Hàng</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Google Fonts: Plus Jakarta Sans đồng bộ toàn trang -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        /* Nền Trang Bìa Đa Sắc Pastel Thanh Lịch & Thoáng Đãng */
+        .pastel-hero-bg {
+            background-color: #fdfcff;
+            background-image:
+                radial-gradient(at 12% 18%, rgba(254, 205, 211, 0.55) 0px, transparent 50%),
+                radial-gradient(at 88% 15%, rgba(221, 214, 254, 0.60) 0px, transparent 50%),
+                radial-gradient(at 84% 85%, rgba(186, 230, 253, 0.55) 0px, transparent 50%),
+                radial-gradient(at 15% 85%, rgba(253, 230, 138, 0.45) 0px, transparent 48%);
+        }
+
+        /* Nền Không Gian Làm Việc Đa Sắc Pastel Nhẹ Nhàng */
+        .pastel-workspace-bg {
+            background-color: #faf9fd;
+            background-image:
+                radial-gradient(#f5d0fe 1.2px, transparent 1.2px),
+                radial-gradient(#bae6fd 1.2px, #faf9fd 1.2px);
+            background-size: 36px 36px;
+            background-position: 0 0, 18px 18px;
+        }
+
+        /* Thẻ Bento Bo Tròn Mềm Mại */
+        .bento-card {
+            background: rgba(255, 255, 255, 0.96);
+            backdrop-filter: blur(12px);
+            border-radius: 28px;
+            box-shadow: 0 10px 28px -10px rgba(71, 85, 105, 0.09), 0 4px 10px -4px rgba(71, 85, 105, 0.04);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        /* 5 Bảng Màu Pastel Chuyên Biệt Cho 5 Bước */
+        .pastel-peach {
+            background: linear-gradient(145deg, #fff1f2 0%, #ffe4e6 100%);
+            border: 2px solid #fda4af;
+        }
+        .pastel-mint {
+            background: linear-gradient(145deg, #ecfdf5 0%, #d1fae5 100%);
+            border: 2px solid #6ee7b7;
+        }
+        .pastel-lavender {
+            background: linear-gradient(145deg, #f5f3ff 0%, #ede9fe 100%);
+            border: 2px solid #c4b5fd;
+        }
+        .pastel-butter {
+            background: linear-gradient(145deg, #fffbeb 0%, #fef3c7 100%);
+            border: 2px solid #fcd34d;
+        }
+        .pastel-sky {
+            background: linear-gradient(145deg, #f0f9ff 0%, #e0f2fe 100%);
+            border: 2px solid #7dd3fc;
+        }
+
+        /* Nút Hành Động Gradient Đa Sắc Pastel */
+        .btn-pastel-primary {
+            background: linear-gradient(95deg, #f43f5e 0%, #9333ea 50%, #0284c7 100%);
+            box-shadow: 0 10px 22px -6px rgba(147, 51, 234, 0.35);
+            transition: all 0.2s ease;
+        }
+        .btn-pastel-primary:hover:not(:disabled) {
+            filter: brightness(1.06);
+            transform: translateY(-1px);
+            box-shadow: 0 14px 26px -6px rgba(2, 132, 199, 0.38);
+        }
+        .btn-pastel-primary:disabled {
+            opacity: 0.45;
+            cursor: not-allowed;
+        }
+
+        /* Trạng Thái Node Sơ Đồ Luồng */
+        .flow-node {
+            transition: all 0.28s ease;
+        }
+        .node-running {
+            transform: scale(1.03);
+            box-shadow: 0 0 0 4px rgba(147, 51, 234, 0.22) !important;
+        }
+        .node-success {
+            opacity: 1 !important;
+            box-shadow: 0 6px 14px -4px rgba(16, 185, 129, 0.22);
+        }
+        .node-error {
+            opacity: 1 !important;
+            background: linear-gradient(135deg, #ffe4e6, #fecdd3) !important;
+            border: 2px solid #e11d48 !important;
+            color: #881337 !important;
+            box-shadow: 0 0 0 4px rgba(225, 29, 72, 0.25) !important;
+            transform: scale(1.04);
+        }
+
+        @keyframes popIn {
+            from { opacity: 0; transform: scale(0.95) translateY(8px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        .animate-pop-in {
+            animation: popIn 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #f8fafc; }
+        ::-webkit-scrollbar-thumb { background: #c084fc; border-radius: 99px; }
+    </style>
+</head>
+<body class="text-slate-700 antialiased selection:bg-purple-200 selection:text-purple-950">
+
+    <!-- ===================================================================== -->
+    <!-- 1. TRANG BÌA ĐA SẮC PASTEL ĐỒNG BỘ FONT CHỮ & GỌN ĐẸP                 -->
+    <!-- ===================================================================== -->
+    <section id="cover-hero" class="pastel-hero-bg relative min-h-screen w-full flex flex-col justify-between overflow-hidden">
+
+        <!-- Header Trang Bìa -->
+        <header class="max-w-7xl w-full mx-auto px-6 sm:px-10 pt-6 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-rose-500 via-purple-600 to-sky-500 text-white flex items-center justify-center shadow-md">
+                    <i class="fa-solid fa-store text-base"></i>
+                </div>
+                <div>
+                    <div class="flex items-center gap-2">
+                        <span class="font-extrabold text-lg text-slate-900 tracking-tight">PHÚC AN RETAIL</span>
+                        <span class="px-2.5 py-0.5 rounded-full bg-purple-100 text-purple-700 font-bold text-[11px]">AI System</span>
+                    </div>
+                    <p class="text-xs text-slate-500 font-medium">Hệ thống chuẩn hóa dữ liệu & điều hành 18 cửa hàng</p>
+                </div>
+            </div>
+
+            <button onclick="openApiModal()" class="px-4 py-2 rounded-full bg-white hover:bg-sky-50 border border-sky-200 text-slate-700 text-xs font-bold shadow-sm transition flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                <span>Cài đặt Server</span>
+            </button>
+        </header>
+
+        <!-- Nội Dung Chính Trang Bìa (Font chữ đồng nhất 100%, không cắt chữ) -->
+        <div class="max-w-5xl w-full mx-auto px-6 sm:px-10 my-auto py-12 text-center space-y-8 animate-pop-in">
+            <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-purple-200 shadow-sm text-xs font-bold text-purple-700">
+                <i class="fa-solid fa-sparkles text-amber-500"></i>
+                <span>Giải pháp tự động hóa báo cáo kinh doanh cho chuỗi 18 cửa hàng Phúc An</span>
+            </div>
+
+            <h1 class="text-3xl sm:text-5xl font-extrabold text-slate-900 leading-tight tracking-tight max-w-4xl mx-auto">
+                Chuẩn Hóa Dữ Liệu Bán Hàng &amp; Điều Hành Chuỗi 18 Cửa Hàng Thông Minh
+            </h1>
+
+            <p class="text-sm sm:text-base text-slate-600 leading-relaxed max-w-2xl mx-auto font-medium">
+                Đưa tệp dữ liệu bán hàng của bạn vào hệ thống: AI tự động loại bỏ đơn trùng và đơn thiếu giá vốn, vẽ biểu đồ Dashboard trực quan, tìm ra Top 3 cửa hàng cần hỗ trợ và tạo sẵn Đường Link Báo Cáo HTML để gửi ngay cho Giám đốc.
+            </p>
+
+            <!-- 4 Thẻ Quy Trình Pastel Rõ Ràng -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-left pt-2">
+                <div class="p-5 rounded-3xl pastel-peach shadow-sm">
+                    <div class="w-10 h-10 rounded-2xl bg-white text-rose-500 flex items-center justify-center text-lg shadow-sm mb-3">
+                        <i class="fa-solid fa-file-arrow-up"></i>
+                    </div>
+                    <div class="text-xs font-extrabold text-rose-700">Bước 1 • Nạp dữ liệu</div>
+                    <div class="text-sm font-extrabold text-slate-900 mt-1">Tải 1 file hoặc dán link</div>
+                    <p class="text-xs text-slate-600 mt-1">Hỗ trợ file Excel (.xlsx), CSV hoặc đường link Google Sheet / Lark Base.</p>
+                </div>
+
+                <div class="p-5 rounded-3xl pastel-mint shadow-sm">
+                    <div class="w-10 h-10 rounded-2xl bg-white text-emerald-600 flex items-center justify-center text-lg shadow-sm mb-3">
+                        <i class="fa-solid fa-broom"></i>
+                    </div>
+                    <div class="text-xs font-extrabold text-emerald-800">Bước 2 • Làm sạch AI</div>
+                    <div class="text-sm font-extrabold text-slate-900 mt-1">Lọc đơn trùng &amp; giá vốn</div>
+                    <p class="text-xs text-slate-600 mt-1">Loại bỏ đơn hủy, đơn lặp và giữ riêng các dòng thiếu giá vốn để kiểm tra.</p>
+                </div>
+
+                <div class="p-5 rounded-3xl pastel-lavender shadow-sm">
+                    <div class="w-10 h-10 rounded-2xl bg-white text-purple-600 flex items-center justify-center text-lg shadow-sm mb-3">
+                        <i class="fa-solid fa-chart-column"></i>
+                    </div>
+                    <div class="text-xs font-extrabold text-purple-800">Bước 3 • Phân tích</div>
+                    <div class="text-sm font-extrabold text-slate-900 mt-1">Biểu đồ &amp; Top 3 cửa hàng</div>
+                    <p class="text-xs text-slate-600 mt-1">Vẽ biểu đồ 18 cửa hàng, 5 ngành hàng và tìm 3 cửa hàng đang hụt chỉ tiêu.</p>
+                </div>
+
+                <div class="p-5 rounded-3xl pastel-sky shadow-sm">
+                    <div class="w-10 h-10 rounded-2xl bg-white text-sky-600 flex items-center justify-center text-lg shadow-sm mb-3">
+                        <i class="fa-solid fa-link"></i>
+                    </div>
+                    <div class="text-xs font-extrabold text-sky-800">Bước 4 &amp; 5 • Xuất bản</div>
+                    <div class="text-sm font-extrabold text-slate-900 mt-1">Duyệt &amp; Nhận Link HTML</div>
+                    <p class="text-xs text-slate-600 mt-1">Tạo ngay đường link mở xem trực tiếp Dashboard và Báo cáo quản trị.</p>
+                </div>
+            </div>
+
+            <!-- Nút Bắt Đầu -->
+            <div class="flex flex-wrap items-center justify-center gap-4 pt-3">
+                <a href="#workspace-anchor"
+                   class="px-8 py-4 rounded-full btn-pastel-primary text-white font-extrabold text-sm sm:text-base flex items-center gap-3 shadow-lg">
+                    <span>Bắt đầu sử dụng ngay</span>
+                    <i class="fa-solid fa-arrow-down"></i>
+                </a>
+                <button onclick="quickTrySampleFromCover()"
+                        class="px-7 py-4 rounded-full bg-white hover:bg-amber-50 text-slate-800 border-2 border-amber-200 font-bold text-sm transition flex items-center gap-2 shadow-sm">
+                    <i class="fa-solid fa-bolt text-amber-500"></i>
+                    <span>Chạy thử dữ liệu mẫu 18 cửa hàng</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="pb-5 text-center text-xs font-semibold text-slate-400">
+            Phúc An Retail AI • Giao diện thiết kế trực quan, thân thiện và chuẩn xác
+        </div>
+    </section>
+
+    <!-- ===================================================================== -->
+    <!-- KHÔNG GIAN LÀM VIỆC ĐA SẮC PASTEL                                     -->
+    <!-- ===================================================================== -->
+    <div id="workspace-anchor" class="pastel-workspace-bg min-h-screen flex flex-col">
+
+        <!-- Thanh Điều Hướng Trên Cùng -->
+        <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-purple-100 px-4 sm:px-8 py-3">
+            <div class="max-w-[1440px] mx-auto flex flex-wrap items-center justify-between gap-3">
+                <div class="flex items-center gap-3">
+                    <a href="#cover-hero" title="Về trang bìa" class="w-9 h-9 rounded-2xl bg-gradient-to-tr from-rose-500 via-purple-600 to-sky-500 text-white flex items-center justify-center shadow-sm hover:scale-105 transition">
+                        <i class="fa-solid fa-house text-sm"></i>
+                    </a>
+                    <div class="flex items-center gap-2.5 flex-wrap">
+                        <span class="font-extrabold text-slate-900 text-sm sm:text-base">Phúc An Retail • Trung Tâm Xử Lý Dữ Liệu 18 Cửa Hàng</span>
+                        <span id="api-status-badge" class="px-3 py-0.5 rounded-full text-[11px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                            Sẵn sàng hoạt động
+                        </span>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-2">
+                    <button onclick="openApiModal()" class="px-3.5 py-1.5 rounded-full bg-sky-50 hover:bg-sky-100 text-sky-800 border border-sky-200 text-xs font-bold transition flex items-center gap-1.5">
+                        <i class="fa-solid fa-plug"></i>
+                        <span>Kết nối Localhost</span>
+                    </button>
+                    <button onclick="resetEntirePipeline()" class="px-3.5 py-1.5 rounded-full bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 text-xs font-bold transition flex items-center gap-1.5">
+                        <i class="fa-solid fa-rotate-left"></i>
+                        <span>Làm lại từ Bước 1</span>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- ================================================================= -->
+        <!-- 2. THANH CHỈ DẪN THÔNG MINH ("BẠN ĐANG Ở ĐÂU & CẦN LÀM GÌ?")      -->
+        <!-- ================================================================= -->
+        <section class="max-w-[1440px] w-full mx-auto px-4 sm:px-8 pt-5">
+            <div id="smart-guide-banner" class="pastel-peach rounded-3xl p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-sm transition-all duration-300">
+                <div class="flex items-center gap-3.5">
+                    <div id="guide-icon-box" class="w-12 h-12 rounded-2xl bg-white text-rose-600 flex items-center justify-center text-xl shrink-0 shadow-sm">
+                        <i class="fa-solid fa-hand-point-right"></i>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span id="guide-step-pill" class="px-3 py-0.5 rounded-full bg-white text-rose-700 text-xs font-extrabold">
+                                Đang ở Bước 1 / 5
+                            </span>
+                            <span class="text-xs font-bold text-slate-600">Việc cần làm tiếp theo:</span>
+                        </div>
+                        <p id="guide-instruction-text" class="text-sm sm:text-base font-extrabold text-slate-900 mt-0.5">
+                            Hãy chọn 1 file Excel/CSV của bạn (hoặc bấm nút "Dùng dữ liệu mẫu") ở ô Hồng Đào bên trái để bắt đầu!
+                        </p>
+                    </div>
+                </div>
+                <button id="guide-quick-action-btn" onclick="loadStandardSamplePreset()" class="px-4 py-2.5 rounded-full bg-white hover:bg-rose-50 text-rose-700 font-extrabold text-xs shadow-sm transition shrink-0 flex items-center gap-1.5">
+                    <i class="fa-solid fa-sparkles"></i>
+                    <span>Dùng dữ liệu mẫu ngay</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- ================================================================= -->
+        <!-- 3. SƠ ĐỒ LUỒNG XỬ LÝ TƯƠNG TÁC TRỰC QUAN                          -->
+        <!-- ================================================================= -->
+        <section class="max-w-[1440px] w-full mx-auto px-4 sm:px-8 pt-5">
+            <div class="bento-card p-5 sm:p-6 border border-purple-100 space-y-4">
+                <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-3 pb-3 border-b border-slate-100">
+                    <div class="flex items-center gap-2.5">
+                        <span class="w-8 h-8 rounded-2xl bg-purple-100 text-purple-600 flex items-center justify-center text-sm">
+                            <i class="fa-solid fa-diagram-project"></i>
+                        </span>
+                        <div>
+                            <h2 class="font-extrabold text-slate-900 text-sm sm:text-base">
+                                Sơ Đồ Luồng Xử Lý Dữ Liệu (Tự động sáng đèn từng bước)
+                            </h2>
+                            <p class="text-xs text-slate-500">Nếu gặp lỗi ở bước nào (Nhánh "Không"), hệ thống sẽ báo lỗi to và đưa bạn quay lại bước trước ngay lập tức.</p>
+                        </div>
+                    </div>
+
+                    <!-- Nút kiểm thử tình huống nhánh "Không" -->
+                    <div class="flex flex-wrap items-center gap-2">
+                        <span class="text-xs font-bold text-slate-400">Thử tình huống lỗi:</span>
+                        <button onclick="runSimulationScenario('ERR_INGEST')" class="px-3 py-1.5 rounded-full bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 text-xs font-bold transition flex items-center gap-1.5">
+                            <i class="fa-solid fa-circle-xmark"></i> Bấm "Không" ở Nạp File
+                        </button>
+                        <button onclick="runSimulationScenario('ERR_CLEAN')" class="px-3 py-1.5 rounded-full bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 text-xs font-bold transition flex items-center gap-1.5">
+                            <i class="fa-solid fa-triangle-exclamation"></i> Bấm "Không" ở Làm Sạch
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Sơ Đồ 2 Vùng Ngăn Cách Rõ Ràng -->
+                <div class="overflow-x-auto pb-1">
+                    <div class="min-w-[1060px] grid grid-cols-12 gap-4 items-stretch">
+
+                        <!-- VÙNG 1 (TRÁI): DỪNG AI TEMPLATE -> SHEET/LARK/FILE -> CLEANING & BÁO LỖI -->
+                        <div class="col-span-7 pr-5 border-r-2 border-dashed border-purple-200 flex flex-col justify-between space-y-3">
+                            <div class="text-xs font-extrabold text-rose-700 flex items-center justify-between">
+                                <span>VÙNG 1: NHẬN DỮ LIỆU &amp; LÀM SẠCH</span>
+                                <span class="text-[11px] font-semibold text-slate-400">Nhánh "Không" ➔ Báo lỗi to &amp; quay lại Bước 1</span>
+                            </div>
+
+                            <div class="grid grid-cols-11 gap-2 items-center">
+                                <div id="node-template" class="col-span-3 flow-node pastel-peach opacity-65 p-3 rounded-2xl text-center">
+                                    <div class="text-[10px] font-bold uppercase text-rose-700">Khởi động</div>
+                                    <div class="text-xs font-extrabold text-slate-900 mt-0.5">Dừng AI Template</div>
+                                    <div class="text-[10px] text-slate-600">Chuẩn hóa cột</div>
+                                </div>
+
+                                <div class="col-span-1 text-center text-rose-400"><i class="fa-solid fa-arrow-right"></i></div>
+
+                                <div id="node-ingest" class="col-span-3 flow-node pastel-peach opacity-65 p-3 rounded-2xl text-center">
+                                    <div class="text-[10px] font-bold uppercase text-rose-700">Bước 1</div>
+                                    <div class="text-xs font-extrabold text-slate-900 mt-0.5">Sheet / Lark / File</div>
+                                    <div class="text-[10px] text-slate-600">Đọc tệp nguồn</div>
+                                </div>
+
+                                <div class="col-span-1 flex flex-col items-center justify-center">
+                                    <span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-extrabold mb-0.5">Có</span>
+                                    <i class="fa-solid fa-arrow-right text-emerald-600 text-xs"></i>
+                                </div>
+
+                                <div id="node-cleaning" class="col-span-3 flow-node pastel-mint opacity-65 p-3 rounded-2xl text-center">
+                                    <div class="text-[10px] font-bold uppercase text-emerald-800">Bước 2</div>
+                                    <div class="text-xs font-extrabold text-slate-900 mt-0.5">Cleaning (Làm sạch)</div>
+                                    <div class="text-[10px] text-slate-600">Lọc trùng &amp; Giá vốn</div>
+                                </div>
+                            </div>
+
+                            <!-- Nhánh Báo Lỗi -->
+                            <div class="grid grid-cols-11 gap-2 items-center">
+                                <div class="col-span-3 flex flex-col items-center justify-center text-rose-600">
+                                    <i class="fa-solid fa-arrow-up text-xs"></i>
+                                    <span class="text-[10px] font-extrabold">Quay lại gửi lại</span>
+                                </div>
+
+                                <div class="col-span-1 text-center text-rose-500"><i class="fa-solid fa-arrow-left text-xs"></i></div>
+
+                                <div id="node-error" class="col-span-3 flow-node bg-slate-100 border border-slate-200 text-slate-500 p-2.5 rounded-2xl text-center">
+                                    <div class="flex items-center justify-center gap-1.5">
+                                        <i class="fa-solid fa-circle-xmark text-xs"></i>
+                                        <span class="text-xs font-extrabold">Báo Lỗi Lớn</span>
+                                    </div>
+                                    <div id="node-error-sub" class="text-[10px] mt-0.5">Nhánh "Không"</div>
+                                </div>
+
+                                <div class="col-span-4 flex items-center justify-around text-rose-700 text-[11px] font-bold">
+                                    <span class="px-2.5 py-0.5 rounded-full bg-rose-50 border border-rose-200">
+                                        <i class="fa-solid fa-arrow-down mr-1"></i>Không (File lỗi)
+                                    </span>
+                                    <span class="px-2.5 py-0.5 rounded-full bg-rose-50 border border-rose-200">
+                                        <i class="fa-solid fa-arrow-down mr-1"></i>Không (Lỗi sạch)
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- VÙNG 2 (PHẢI): PROCESS -> VERIFY <-> FEEDBACK -> XUẤT HTML -> DASHBOARD / BÁO CÁO -->
+                        <div class="col-span-5 pl-2 flex flex-col justify-between space-y-2.5">
+                            <div class="text-xs font-extrabold text-purple-700 flex items-center justify-between">
+                                <span>VÙNG 2: PHÂN TÍCH, DUYỆT &amp; XUẤT BẢN</span>
+                                <span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-bold">Đạt sạch (Có) ➔</span>
+                            </div>
+
+                            <div class="grid grid-cols-12 gap-2 items-center">
+                                <div id="node-process" class="col-span-6 flow-node pastel-lavender opacity-65 p-2.5 rounded-2xl text-center">
+                                    <div class="text-[10px] font-bold uppercase text-purple-800">Bước 3</div>
+                                    <div class="text-xs font-extrabold text-slate-900">Process (Phân tích)</div>
+                                    <div class="text-[10px] text-slate-600">Biểu đồ &amp; Top 3 yếu</div>
+                                </div>
+
+                                <div class="col-span-1 text-center text-amber-600"><i class="fa-solid fa-arrow-left text-xs"></i></div>
+
+                                <div id="node-feedback" class="col-span-5 flow-node pastel-butter opacity-65 p-2.5 rounded-2xl text-center">
+                                    <div class="text-xs font-extrabold text-slate-900">Feedback</div>
+                                    <div class="text-[10px] text-slate-600">Góp ý &amp; tính lại</div>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-12 gap-2 items-center">
+                                <div id="node-verify" class="col-span-6 flow-node pastel-butter opacity-65 p-2.5 rounded-2xl text-center">
+                                    <div class="text-[10px] font-bold uppercase text-amber-800">Bước 4</div>
+                                    <div class="text-xs font-extrabold text-slate-900">Verify (Kiểm duyệt)</div>
+                                </div>
+
+                                <div class="col-span-6 flex items-center justify-between px-1 text-[10px] font-bold">
+                                    <span class="px-2 py-0.5 rounded-full bg-amber-100 text-amber-900">
+                                        Không ➔ Feedback <i class="fa-solid fa-arrow-up ml-0.5"></i>
+                                    </span>
+                                    <span class="px-2 py-0.5 rounded-full bg-sky-100 text-sky-800">
+                                        Có <i class="fa-solid fa-arrow-down ml-0.5"></i>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-12 gap-2 items-center">
+                                <div id="node-export-html" class="col-span-4 flow-node pastel-sky opacity-65 p-2 rounded-2xl text-center">
+                                    <div class="text-[10px] font-bold uppercase text-sky-800">Bước 5</div>
+                                    <div class="text-xs font-extrabold text-slate-900">Xuất Link HTML</div>
+                                </div>
+
+                                <div class="col-span-1 text-center text-sky-600"><i class="fa-solid fa-arrow-right text-xs"></i></div>
+
+                                <div id="node-dashboard" onclick="switchOutputView('dashboard')" class="col-span-4 flow-node pastel-lavender opacity-65 p-2 rounded-2xl text-center cursor-pointer">
+                                    <div class="text-xs font-extrabold text-slate-900"><i class="fa-solid fa-chart-pie mr-1 text-purple-600"></i>Dashboard</div>
+                                    <div class="text-[9px] text-slate-600">Biểu đồ trực quan</div>
+                                </div>
+
+                                <div id="node-report" onclick="switchOutputView('exporthtml')" class="col-span-3 flow-node pastel-sky opacity-65 p-2 rounded-2xl text-center cursor-pointer">
+                                    <div class="text-xs font-extrabold text-slate-900"><i class="fa-solid fa-file-lines mr-1 text-sky-600"></i>Báo Cáo</div>
+                                    <div class="text-[9px] text-slate-600">Link &amp; BC</div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================================================================= -->
+        <!-- 4. KHU VỰC THAO TÁC CHÍNH (2 CỘT ĐA SẮC PASTEL RÕ RÀNG)           -->
+        <!-- ================================================================= -->
+        <main id="workspace-main" class="flex-1 max-w-[1440px] w-full mx-auto px-4 sm:px-8 py-6 grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+
+            <!-- ============================================================= -->
+            <!-- CỘT TRÁI (4 CỘT - ĐIỀU KHIỂN TỪNG BƯỚC)                       -->
+            <!-- ============================================================= -->
+            <aside class="lg:col-span-4 space-y-5">
+
+                <!-- BƯỚC 1: CARD HỒNG ĐÀO PASTEL (NẠP DỮ LIỆU VÀO) -->
+                <div class="rounded-3xl pastel-peach p-6 shadow-sm space-y-4">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2.5">
+                            <span class="w-9 h-9 rounded-2xl bg-white text-rose-600 flex items-center justify-center text-base font-extrabold shadow-sm">
+                                1
+                            </span>
+                            <div>
+                                <h2 class="font-extrabold text-slate-900 text-base">Nạp Dữ Liệu Vào</h2>
+                                <p class="text-xs text-rose-800 font-medium">Chọn file của bạn hoặc dùng mẫu</p>
+                            </div>
+                        </div>
+                        <button type="button" onclick="loadStandardSamplePreset()" class="px-3 py-1.5 rounded-full bg-white hover:bg-rose-50 text-rose-700 text-xs font-extrabold shadow-sm transition">
+                            <i class="fa-solid fa-sparkles mr-1"></i>Dùng mẫu
+                        </button>
+                    </div>
+
+                    <!-- Tab chọn nguồn -->
+                    <div class="grid grid-cols-2 gap-1.5 p-1 rounded-2xl bg-white/75 border border-rose-200 text-xs font-bold">
+                        <button type="button" onclick="setSourceTab('file')" id="tab-source-file" class="py-2 rounded-xl bg-white text-rose-700 shadow-sm transition flex items-center justify-center gap-1.5">
+                            <i class="fa-solid fa-file-excel"></i> Chọn File Máy Tính
+                        </button>
+                        <button type="button" onclick="setSourceTab('link')" id="tab-source-link" class="py-2 rounded-xl text-slate-500 hover:text-slate-800 transition flex items-center justify-center gap-1.5">
+                            <i class="fa-solid fa-link"></i> Dán Link Online
+                        </button>
+                    </div>
+
+                    <!-- TAB A: Kéo thả 1 file duy nhất -->
+                    <div id="panel-source-file" class="space-y-3">
+                        <div id="dropzone-single"
+                             onclick="document.getElementById('input-single-file').click()"
+                             ondragover="event.preventDefault(); this.classList.add('border-rose-500','bg-white')"
+                             ondragleave="this.classList.remove('border-rose-500','bg-white')"
+                             ondrop="onDropSingleFile(event)"
+                             class="p-5 rounded-2xl border-2 border-dashed border-rose-300 bg-white/90 hover:bg-white hover:border-rose-500 cursor-pointer transition text-center space-y-2">
+                            <div id="dropzone-icon" class="w-12 h-12 mx-auto rounded-2xl bg-rose-100 text-rose-600 flex items-center justify-center text-xl">
+                                <i class="fa-solid fa-cloud-arrow-up"></i>
+                            </div>
+                            <div id="dropzone-title" class="text-xs sm:text-sm font-extrabold text-slate-900">
+                                Bấm vào đây để chọn 1 file (.xlsx, .xls, .csv)
+                            </div>
+                            <div id="dropzone-sub" class="text-xs text-slate-500">
+                                Hoặc kéo thả tệp dữ liệu bán hàng của bạn vào ô này
+                            </div>
+                            <input type="file" id="input-single-file" accept=".xlsx,.xls,.csv" class="hidden" onchange="onSelectSingleFile(event)">
+                        </div>
+
+                        <div class="flex items-center justify-between px-1">
+                            <span class="text-xs text-rose-900/80 font-medium">Có 5 tệp tách rời?</span>
+                            <button type="button" onclick="toggleSplitFiveFiles()" id="btn-split-5" class="text-xs font-extrabold text-rose-700 hover:underline">
+                                <i class="fa-solid fa-layer-group mr-1"></i>Mở ô nạp 5 file lẻ
+                            </button>
+                        </div>
+
+                        <div id="split-five-container" class="hidden space-y-2 pt-2 border-t border-rose-200"></div>
+                    </div>
+
+                    <!-- TAB B: Dán link Google Sheet / Lark Base -->
+                    <div id="panel-source-link" class="hidden space-y-2.5">
+                        <div class="p-4 rounded-2xl bg-white/95 border border-rose-200 space-y-2">
+                            <label class="block text-xs font-extrabold text-slate-800">Dán đường link Google Sheet hoặc Lark Base:</label>
+                            <input type="url" id="input-cloud-url" oninput="checkInputReadyState()"
+                                   placeholder="https://docs.google.com/spreadsheets/d/..."
+                                   class="w-full px-3.5 py-2.5 rounded-xl bg-rose-50/40 border border-rose-200 text-xs text-slate-800 focus:outline-none focus:border-rose-400">
+                            <p class="text-[11px] text-slate-500">Hãy đảm bảo đường link đã mở quyền xem công khai.</p>
+                        </div>
+                    </div>
+
+                    <!-- Kỳ báo cáo -->
+                    <div class="grid grid-cols-2 gap-2.5">
+                        <div class="bg-white/85 p-2.5 rounded-2xl border border-rose-200">
+                            <label class="block text-[11px] font-bold text-rose-700">Kỳ báo cáo</label>
+                            <input type="text" id="field-period-report" value="2026-Q1" class="w-full bg-transparent text-xs font-extrabold text-slate-900 focus:outline-none mt-0.5">
+                        </div>
+                        <div class="bg-white/85 p-2.5 rounded-2xl border border-rose-200">
+                            <label class="block text-[11px] font-bold text-rose-700">So với kỳ trước</label>
+                            <input type="text" id="field-period-compare" value="2025-Q4" class="w-full bg-transparent text-xs font-extrabold text-slate-900 focus:outline-none mt-0.5">
+                        </div>
+                    </div>
+
+                    <!-- Nút chạy AI -->
+                    <div class="space-y-2 pt-1">
+                        <div id="readiness-status-box" class="px-3.5 py-2.5 rounded-2xl bg-white/90 text-slate-600 text-xs font-semibold flex items-center gap-2">
+                            <i class="fa-solid fa-circle-info text-rose-500"></i>
+                            <span>Chưa có file. Hãy chọn file hoặc bấm "Dùng mẫu".</span>
+                        </div>
+
+                        <button id="btn-start-agent" onclick="startPipelineExecution()" disabled
+                                class="w-full py-4 rounded-2xl btn-pastel-primary text-white font-extrabold text-xs sm:text-sm tracking-wide uppercase flex items-center justify-center gap-2.5">
+                            <i id="btn-start-icon" class="fa-solid fa-wand-magic-sparkles"></i>
+                            <span id="btn-start-text">CHẠY AI LÀM SẠCH &amp; PHÂN TÍCH</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- BƯỚC 4: CARD VÀNG KEM PASTEL (KIỂM DUYỆT KẾT QUẢ) -->
+                <div id="card-verify-feedback" class="rounded-3xl pastel-butter p-6 shadow-sm space-y-4">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2.5">
+                            <span class="w-9 h-9 rounded-2xl bg-white text-amber-600 flex items-center justify-center text-base font-extrabold shadow-sm">
+                                4
+                            </span>
+                            <div>
+                                <h2 class="font-extrabold text-slate-900 text-base">Kiểm Duyệt Kết Quả</h2>
+                                <p class="text-xs text-amber-900 font-medium">Duyệt để xuất Link HTML hoặc góp ý lại</p>
+                            </div>
+                        </div>
+                        <span id="verify-gate-pill" class="px-3 py-1 rounded-full text-xs font-extrabold bg-white/85 text-amber-900">
+                            Chờ Bước 1-3
+                        </span>
+                    </div>
+
+                    <div id="verify-locked-notice" class="p-4 rounded-2xl bg-white/85 border border-amber-200 text-xs text-slate-600 flex items-center gap-3">
+                        <i class="fa-solid fa-lock text-amber-500 text-lg"></i>
+                        <span>Sau khi bạn bấm nút <strong>CHẠY AI LÀM SẠCH &amp; PHÂN TÍCH</strong> ở trên, ô này sẽ mở ra để bạn duyệt kết quả và tạo Link HTML.</span>
+                    </div>
+
+                    <div id="verify-active-controls" class="hidden space-y-3.5 animate-pop-in">
+                        <div class="p-3.5 rounded-2xl bg-white/95 border border-amber-200 text-xs text-slate-700 leading-relaxed">
+                            <strong><i class="fa-solid fa-user-check text-amber-600 mr-1"></i>Mời bạn kiểm tra:</strong> AI đã chọn sẵn 3 cửa hàng yếu nhất bên dưới. Bạn có thể tick đổi cửa hàng khác hoặc ghi chú chỉ đạo thêm.
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-extrabold text-amber-950 mb-1.5">Danh sách 3 cửa hàng ưu tiên hỗ trợ:</label>
+                            <div id="verify-store-checkboxes" class="max-h-36 overflow-y-auto p-2.5 rounded-2xl bg-white border border-amber-200 space-y-1.5 text-xs"></div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-extrabold text-amber-950 mb-1">Ghi chú chỉ đạo (hoặc góp ý nếu bấm "Không"):</label>
+                            <textarea id="verify-feedback-input" rows="2"
+                                      class="w-full p-3 rounded-2xl bg-white border border-amber-300 text-xs text-slate-800 focus:outline-none focus:border-amber-500">Tập trung hỗ trợ chương trình khuyến mãi cuối tuần và kiểm tra lại khâu đổi trả hàng cho 3 cửa hàng trên.</textarea>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
+                            <button type="button" onclick="submitVerifyRejectFeedback()"
+                                    class="py-3 px-3 rounded-2xl bg-white hover:bg-rose-50 text-rose-700 border border-rose-200 font-extrabold text-xs transition flex items-center justify-center gap-1.5 shadow-sm">
+                                <i class="fa-solid fa-rotate-left"></i>
+                                <span>Không ➔ Tính lại</span>
+                            </button>
+                            <button type="button" onclick="submitVerifyApproveExport()"
+                                    class="py-3 px-3 rounded-2xl bg-gradient-to-r from-emerald-500 to-sky-600 hover:opacity-95 text-white font-extrabold text-xs shadow-md transition flex items-center justify-center gap-1.5">
+                                <i class="fa-solid fa-check-circle"></i>
+                                <span>Có (Duyệt) ➔ Xuất HTML</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Nhật Ký Hoạt Động -->
+                <div class="bento-card p-4 border border-slate-200/80 space-y-2">
+                    <div class="text-xs font-extrabold text-slate-700 flex items-center justify-between">
+                        <span><i class="fa-solid fa-list-check text-purple-600 mr-1.5"></i>Nhật ký AI thực hiện</span>
+                        <span id="log-session-tag" class="font-mono text-[11px] px-2.5 py-0.5 rounded-full bg-purple-50 text-purple-700 font-bold">CHỜ LỆNH</span>
+                    </div>
+                    <div id="system-execution-log" class="p-3 rounded-2xl bg-slate-50 border border-slate-100 text-xs text-slate-600 space-y-1.5 max-h-28 overflow-y-auto">
+                        <div class="text-slate-400 italic">• Đang chờ bạn chọn file dữ liệu ở Bước 1...</div>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- ============================================================= -->
+            <!-- CỘT PHẢI (8 CỘT - DASHBOARD BIỂU ĐỒ & XUẤT LINK HTML)         -->
+            <!-- ============================================================= -->
+            <section class="lg:col-span-8 space-y-5">
+
+                <!-- TRẠNG THÁI 1: MÀN HÌNH CHỜ BẮT ĐẦU -->
+                <div id="right-state-empty" class="bento-card p-8 sm:p-12 border-2 border-purple-100 text-center space-y-6 animate-pop-in">
+                    <div class="w-20 h-20 mx-auto rounded-3xl bg-gradient-to-tr from-rose-100 via-purple-100 to-sky-100 text-purple-600 flex items-center justify-center text-3xl shadow-sm">
+                        <i class="fa-solid fa-chart-column"></i>
+                    </div>
+                    <div class="max-w-lg mx-auto space-y-2">
+                        <span class="px-3.5 py-1 rounded-full bg-purple-50 text-purple-700 border border-purple-200 text-xs font-extrabold">
+                            Khu vực hiển thị Dashboard Biểu Đồ &amp; Đường Link Báo Cáo
+                        </span>
+                        <h3 class="text-xl sm:text-2xl font-extrabold text-slate-900 pt-1">
+                            Sẵn sàng phân tích dữ liệu 18 cửa hàng Phúc An
+                        </h3>
+                        <p class="text-xs sm:text-sm text-slate-500 leading-relaxed">
+                            Bạn hãy chọn file ở cột bên trái (hoặc bấm nút <strong>"Dùng mẫu"</strong>) rồi nhấn <strong>CHẠY AI LÀM SẠCH &amp; PHÂN TÍCH</strong> để xem toàn bộ biểu đồ và xuất báo cáo HTML.
+                        </p>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-3xl mx-auto text-left">
+                        <div class="p-5 rounded-3xl pastel-peach">
+                            <div class="text-xs font-extrabold text-rose-700 mb-1">1. Nạp dữ liệu vào</div>
+                            <p class="text-xs text-slate-700">Chọn file Excel/CSV của bạn hoặc bấm nút <strong>"Dùng mẫu"</strong>.</p>
+                        </div>
+                        <div class="p-5 rounded-3xl pastel-mint">
+                            <div class="text-xs font-extrabold text-emerald-800 mb-1">2. AI Làm sạch &amp; Vẽ biểu đồ</div>
+                            <p class="text-xs text-slate-700">Tự lọc bỏ đơn trùng/lỗi và vẽ biểu đồ doanh thu 18 cửa hàng.</p>
+                        </div>
+                        <div class="p-5 rounded-3xl pastel-sky">
+                            <div class="text-xs font-extrabold text-sky-800 mb-1">3. Duyệt &amp; Nhận Link HTML</div>
+                            <p class="text-xs text-slate-700">Bấm duyệt để nhận ngay đường link mở xem Dashboard &amp; Báo cáo.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- TRẠNG THÁI 2: KẾT QUẢ ĐA SẮC PASTEL (3 TAB CHÍNH) -->
+                <div id="right-state-results" class="hidden space-y-5 animate-pop-in">
+
+                    <!-- 3 Tab Chuyển Đổi Đa Sắc Pastel -->
+                    <div class="flex flex-wrap items-center gap-2.5">
+                        <button type="button" onclick="switchOutputView('dashboard')" id="out-tab-dashboard"
+                                class="out-tab-btn px-5 py-3 rounded-full text-xs sm:text-sm font-extrabold bg-purple-600 text-white shadow-md transition flex items-center gap-2">
+                            <i class="fa-solid fa-chart-pie"></i>
+                            <span>1. Dashboard Biểu Đồ &amp; 18 Cửa Hàng</span>
+                        </button>
+                        <button type="button" onclick="switchOutputView('quarantine')" id="out-tab-quarantine"
+                                class="out-tab-btn px-5 py-3 rounded-full text-xs sm:text-sm font-extrabold bg-emerald-100 text-emerald-900 border border-emerald-300 hover:bg-emerald-200 transition flex items-center gap-2">
+                            <i class="fa-solid fa-shield-check"></i>
+                            <span>2. Dữ Liệu Sạch &amp; Đơn Lỗi</span>
+                            <span id="badge-q-total" class="px-2 py-0.5 rounded-full bg-white text-emerald-800 text-xs font-extrabold">6</span>
+                        </button>
+                        <button type="button" onclick="switchOutputView('exporthtml')" id="out-tab-exporthtml"
+                                class="out-tab-btn px-5 py-3 rounded-full text-xs sm:text-sm font-extrabold bg-sky-100 text-sky-900 border border-sky-300 hover:bg-sky-200 transition flex items-center gap-2">
+                            <i class="fa-solid fa-link"></i>
+                            <span>3. Xuất Link HTML (Dashboard &amp; BC)</span>
+                        </button>
+                    </div>
+
+                    <!-- Banner nhắc nhở duyệt ở Bước 4 -->
+                    <div id="banner-pending-verify" class="pastel-butter p-4 rounded-3xl text-xs sm:text-sm text-amber-950 flex flex-wrap items-center justify-between gap-3 shadow-sm">
+                        <div class="flex items-center gap-2.5">
+                            <i class="fa-solid fa-bell text-amber-600 text-lg"></i>
+                            <span><strong>Bước 4:</strong> Bạn đang xem trước Dashboard. Bấm nút bên cạnh để duyệt và tạo ngay <strong>Đường Link HTML</strong>!</span>
+                        </div>
+                        <button type="button" onclick="submitVerifyApproveExport()" class="px-4 py-2 rounded-full bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-xs shadow-sm transition">
+                            Có (Duyệt) &amp; Xuất Link HTML ✓
+                        </button>
+                    </div>
+
+                    <!-- ===================================================== -->
+                    <!-- TAB 1: DASHBOARD BIỂU ĐỒ & TOP 3 CỬA HÀNG YẾU         -->
+                    <!-- ===================================================== -->
+                    <div id="pane-dashboard" class="output-pane space-y-5">
+
+                        <!-- 4 Thẻ KPI Chuỗi 4 Màu Pastel -->
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3.5">
+                            <div class="rounded-3xl pastel-peach p-4 shadow-sm">
+                                <div class="text-xs font-extrabold text-rose-700">Tổng Doanh Thu</div>
+                                <div id="kpi-net-rev" class="text-xl sm:text-2xl font-extrabold text-slate-900 mt-1">10,44 Tỷ</div>
+                                <div id="kpi-rev-comp" class="text-xs font-bold text-rose-800 mt-1">Đạt 88.35% mục tiêu</div>
+                            </div>
+                            <div class="rounded-3xl pastel-mint p-4 shadow-sm">
+                                <div class="text-xs font-extrabold text-emerald-800">Lợi Nhuận Gộp</div>
+                                <div id="kpi-gross-profit" class="text-xl sm:text-2xl font-extrabold text-slate-900 mt-1">3,74 Tỷ</div>
+                                <div id="kpi-prof-comp" class="text-xs font-bold text-emerald-800 mt-1">Đạt 83.25% mục tiêu</div>
+                            </div>
+                            <div class="rounded-3xl pastel-lavender p-4 shadow-sm">
+                                <div class="text-xs font-extrabold text-purple-800">Tỷ Lệ Lãi Gộp</div>
+                                <div id="kpi-margin" class="text-xl sm:text-2xl font-extrabold text-slate-900 mt-1">35.82%</div>
+                                <div class="text-xs font-bold text-purple-800 mt-1">Trung bình 18 cửa hàng</div>
+                            </div>
+                            <div class="rounded-3xl pastel-butter p-4 shadow-sm">
+                                <div class="text-xs font-extrabold text-amber-800">Tỷ Lệ Trả Hàng</div>
+                                <div id="kpi-return" class="text-xl sm:text-2xl font-extrabold text-slate-900 mt-1">2.21%</div>
+                                <div class="text-xs font-bold text-amber-800 mt-1">Mức an toàn cho phép</div>
+                            </div>
+                        </div>
+
+                        <!-- KHU VỰC BIỂU ĐỒ TRỰC QUAN (2 BIỂU ĐỒ SONG SONG) -->
+                        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+                            <!-- Biểu đồ 1: Cột So Sánh Tỷ Lệ Đạt Chỉ Tiêu 18 Cửa Hàng -->
+                            <div class="lg:col-span-7 bento-card p-5 border border-purple-100 space-y-3">
+                                <div class="flex items-center justify-between">
+                                    <h3 class="font-extrabold text-slate-900 text-sm flex items-center gap-2">
+                                        <span class="w-7 h-7 rounded-xl bg-purple-100 text-purple-600 flex items-center justify-center text-xs"><i class="fa-solid fa-chart-simple"></i></span>
+                                        <span>Biểu Đồ Tỷ Lệ Hoàn Thành Chỉ Tiêu (%)</span>
+                                    </h3>
+                                    <span class="text-[11px] font-bold text-rose-600 bg-rose-50 px-2.5 py-0.5 rounded-full">Đỏ: Dưới 75% (Cần cứu)</span>
+                                </div>
+                                <div class="h-64 w-full">
+                                    <canvas id="dashboardStoresChart"></canvas>
+                                </div>
+                            </div>
+
+                            <!-- Biểu đồ 2: Tròn Cơ Cấu Doanh Thu 5 Ngành Hàng -->
+                            <div class="lg:col-span-5 bento-card p-5 border border-sky-100 space-y-3">
+                                <div class="flex items-center justify-between">
+                                    <h3 class="font-extrabold text-slate-900 text-sm flex items-center gap-2">
+                                        <span class="w-7 h-7 rounded-xl bg-sky-100 text-sky-600 flex items-center justify-center text-xs"><i class="fa-solid fa-chart-pie"></i></span>
+                                        <span>Cơ Cấu 5 Ngành Hàng</span>
+                                    </h3>
+                                    <span class="text-[11px] font-bold text-sky-700 bg-sky-50 px-2.5 py-0.5 rounded-full">Tỷ trọng %</span>
+                                </div>
+                                <div class="h-64 w-full flex items-center justify-center">
+                                    <canvas id="dashboardCategoryChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Top 3 Cửa Hàng Cần Hỗ Trợ -->
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between flex-wrap gap-1">
+                                <h3 class="font-extrabold text-slate-900 text-base flex items-center gap-2">
+                                    <span class="w-7 h-7 rounded-xl bg-rose-100 text-rose-600 flex items-center justify-center text-xs"><i class="fa-solid fa-fire"></i></span>
+                                    <span>Top 3 Cửa Hàng Cần Cứu Doanh Số Ngay</span>
+                                </h3>
+                                <span class="text-xs text-slate-500 font-medium">AI tự động chẩn đoán nguyên nhân và đề xuất cách làm</span>
+                            </div>
+                            <div id="top3-highlight-grid" class="grid grid-cols-1 md:grid-cols-3 gap-4"></div>
+                        </div>
+
+                        <!-- Bảng Chi Tiết 18 Cửa Hàng -->
+                        <div class="bento-card p-5 sm:p-6 border border-purple-100 space-y-4">
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                                <div class="flex items-center gap-2">
+                                    <span class="w-8 h-8 rounded-2xl bg-purple-100 text-purple-600 flex items-center justify-center text-sm"><i class="fa-solid fa-store"></i></span>
+                                    <h3 class="font-extrabold text-slate-900 text-base">Bảng Kết Quả Chi Tiết 18 Cửa Hàng</h3>
+                                </div>
+
+                                <div class="flex items-center gap-2">
+                                    <div class="relative">
+                                        <i class="fa-solid fa-magnifying-glass text-slate-400 text-xs absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+                                        <input type="text" id="store-search-input" onkeyup="filterStoreTable()" placeholder="Tìm tên cửa hàng..."
+                                               class="pl-9 pr-3.5 py-2 rounded-full bg-purple-50/70 border border-purple-200 text-xs text-slate-800 focus:outline-none focus:border-purple-400">
+                                    </div>
+                                    <select id="store-region-filter" onchange="filterStoreTable()"
+                                            class="px-3.5 py-2 rounded-full bg-sky-50 border border-sky-200 text-xs font-bold text-sky-900 focus:outline-none">
+                                        <option value="ALL">Cả 3 miền</option>
+                                        <option value="Miền Bắc">Miền Bắc</option>
+                                        <option value="Miền Trung">Miền Trung</option>
+                                        <option value="Miền Nam">Miền Nam</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="overflow-x-auto max-h-[380px] overflow-y-auto">
+                                <table class="w-full text-left border-collapse text-xs">
+                                    <thead class="sticky top-0 bg-purple-50 text-xs font-extrabold text-purple-950 border-b border-purple-100 z-10">
+                                        <tr>
+                                            <th class="py-3 px-3 rounded-tl-xl">Tên Cửa Hàng</th>
+                                            <th class="py-3 px-2.5 text-center">Doanh Thu</th>
+                                            <th class="py-3 px-2.5 text-center">Đạt Chỉ Tiêu</th>
+                                            <th class="py-3 px-2.5 text-center">Lãi Gộp</th>
+                                            <th class="py-3 px-2.5 text-center">So Kỳ Trước</th>
+                                            <th class="py-3 px-2.5 text-center">Trả Hàng</th>
+                                            <th class="py-3 px-3 text-right rounded-tr-xl">Đánh Giá</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="table-18-stores-body" class="divide-y divide-slate-100 text-slate-700"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ===================================================== -->
+                    <!-- TAB 2: KIỂM TRA DỮ LIỆU SẠCH & ĐƠN LỖI                -->
+                    <!-- ===================================================== -->
+                    <div id="pane-quarantine" class="output-pane hidden space-y-4">
+                        <div class="rounded-3xl pastel-mint p-6 space-y-4 shadow-sm">
+                            <div class="flex flex-wrap items-center justify-between gap-3">
+                                <div>
+                                    <h3 class="font-extrabold text-slate-900 text-lg">Kết Quả Lọc Dữ Liệu Sạch (Bước 2)</h3>
+                                    <p class="text-xs text-emerald-950">AI đã tự động tách riêng các dòng bị trùng, đơn hủy hoặc thiếu giá vốn để số liệu không bị sai.</p>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <span class="px-3.5 py-1.5 rounded-full bg-white text-emerald-700 text-xs font-extrabold shadow-sm">
+                                        <i class="fa-solid fa-check mr-1"></i>5,994 đơn hợp lệ
+                                    </span>
+                                    <span class="px-3.5 py-1.5 rounded-full bg-rose-100 text-rose-700 text-xs font-extrabold">
+                                        <i class="fa-solid fa-ban mr-1"></i><span id="q-count-inline">6</span> đơn lỗi bị loại
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="overflow-x-auto rounded-2xl bg-white border border-emerald-200">
+                                <table class="w-full text-left text-xs">
+                                    <thead class="bg-emerald-50 text-emerald-950 font-extrabold">
+                                        <tr>
+                                            <th class="py-3 px-3">Mã Dòng</th>
+                                            <th class="py-3 px-3">Loại Lỗi Phát Hiện</th>
+                                            <th class="py-3 px-3">Mã Đơn / Sản Phẩm</th>
+                                            <th class="py-3 px-3">Tệp Nguồn</th>
+                                            <th class="py-3 px-3">Giải Thích Dễ Hiểu</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="quarantine-tbody" class="divide-y divide-emerald-50 bg-white"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ===================================================== -->
+                    <!-- TAB 3: XUẤT LINK HTML (BAO GỒM DASHBOARD & BÁO CÁO)   -->
+                    <!-- ===================================================== -->
+                    <div id="pane-exporthtml" class="output-pane hidden space-y-5">
+
+                        <!-- KHỐI TẠO ĐƯỜNG LINK HTML TRỰC TIẾP -->
+                        <div class="rounded-3xl pastel-sky p-6 sm:p-7 space-y-5 shadow-md">
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-12 h-12 rounded-2xl bg-white text-sky-600 flex items-center justify-center text-2xl shadow-sm shrink-0">
+                                        <i class="fa-solid fa-link"></i>
+                                    </div>
+                                    <div>
+                                        <span class="px-2.5 py-0.5 rounded-full bg-white text-sky-800 text-xs font-extrabold">Bước 5 • Xuất Bản Hoàn Tất</span>
+                                        <h3 class="font-extrabold text-slate-900 text-lg mt-0.5">Đường Link HTML (Dashboard &amp; Báo Cáo Quản Trị)</h3>
+                                    </div>
+                                </div>
+                                <span id="html-link-status-pill" class="px-3.5 py-1 rounded-full bg-amber-100 text-amber-900 text-xs font-extrabold">
+                                    Chưa duyệt ở Bước 4
+                                </span>
+                            </div>
+
+                            <div id="html-link-locked-box" class="p-5 rounded-2xl bg-white/95 border border-sky-200 flex flex-col sm:flex-row items-center justify-between gap-4">
+                                <div class="text-xs sm:text-sm text-slate-700">
+                                    Bạn chưa bấm duyệt kết quả ở <strong>Bước 4</strong>. Bấm nút bên cạnh để tạo ngay <strong>Đường Link HTML</strong> chứa đầy đủ Dashboard biểu đồ và Báo cáo quản trị!
+                                </div>
+                                <button type="button" onclick="submitVerifyApproveExport()" class="px-5 py-3 rounded-full btn-pastel-primary text-white font-extrabold text-xs shrink-0">
+                                    Duyệt &amp; Tạo Link HTML Ngay
+                                </button>
+                            </div>
+
+                            <div id="html-link-ready-box" class="hidden space-y-4 animate-pop-in">
+                                <div class="p-4 rounded-2xl bg-white border-2 border-sky-300 space-y-2.5 shadow-sm">
+                                    <label class="block text-xs font-extrabold text-sky-950">
+                                        <i class="fa-solid fa-globe text-sky-500 mr-1"></i>Đường Link HTML Trực Tiếp (Bên trong có đầy đủ Dashboard Biểu Đồ &amp; Báo Cáo Quản Trị):
+                                    </label>
+                                    <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+                                        <input type="text" id="generated-html-link-input" readonly
+                                               class="flex-1 px-3.5 py-2.5 rounded-xl bg-sky-50/70 border border-sky-200 font-mono text-xs text-sky-950 focus:outline-none">
+                                        <button type="button" onclick="copyGeneratedHtmlLink()"
+                                                class="px-4 py-2.5 rounded-xl bg-sky-100 hover:bg-sky-200 text-sky-900 font-extrabold text-xs transition flex items-center justify-center gap-1.5 shrink-0">
+                                            <i class="fa-regular fa-copy"></i> Copy Link
+                                        </button>
+                                        <a id="btn-open-html-new-tab" href="#" target="_blank"
+                                           class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-sky-600 to-purple-600 hover:opacity-95 text-white font-extrabold text-xs shadow-md transition flex items-center justify-center gap-1.5 shrink-0">
+                                            <i class="fa-solid fa-arrow-up-right-from-square"></i> Mở Link Xem Ngay (Tab Mới)
+                                        </a>
+                                    </div>
+                                </div>
+
+                                <!-- Các nút tải tệp & xem nhanh Dashboard -->
+                                <div class="flex flex-wrap items-center gap-2.5">
+                                    <button type="button" onclick="switchOutputView('dashboard')"
+                                            class="px-5 py-3 rounded-full bg-purple-600 hover:bg-purple-700 text-white font-extrabold text-xs shadow-sm transition flex items-center gap-2">
+                                        <i class="fa-solid fa-chart-pie"></i>
+                                        <span>Xem Mục Dashboard Tại Đây</span>
+                                    </button>
+                                    <button type="button" onclick="downloadStandaloneHtmlReport()"
+                                            class="px-5 py-3 rounded-full bg-white hover:bg-sky-50 text-sky-800 border border-sky-300 font-extrabold text-xs shadow-sm transition flex items-center gap-2">
+                                        <i class="fa-solid fa-download text-sky-600"></i>
+                                        <span>Tải File .HTML về máy</span>
+                                    </button>
+                                    <button type="button" onclick="downloadExcelReport()"
+                                            class="px-5 py-3 rounded-full bg-white hover:bg-emerald-50 text-emerald-800 border border-emerald-300 font-extrabold text-xs shadow-sm transition flex items-center gap-2">
+                                        <i class="fa-solid fa-file-excel text-emerald-600"></i>
+                                        <span>Tải Excel 4 Bảng</span>
+                                    </button>
+                                    <button type="button" onclick="downloadAuditJson()"
+                                            class="px-5 py-3 rounded-full bg-white hover:bg-purple-50 text-purple-800 border border-purple-300 font-extrabold text-xs shadow-sm transition flex items-center gap-2">
+                                        <i class="fa-solid fa-file-code text-purple-600"></i>
+                                        <span>Tải Nhật Ký JSON</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- BẢN XEM TRƯỚC BÁO CÁO QUẢN TRỊ (BC) -->
+                        <div class="bento-card p-6 sm:p-8 border border-sky-200 space-y-6 bg-white">
+                            <div class="border-b-2 border-purple-100 pb-4">
+                                <span class="px-3 py-1 rounded-full bg-sky-100 text-sky-800 text-xs font-extrabold">
+                                    Nội Dung Báo Cáo Quản Trị (BC)
+                                </span>
+                                <h2 class="text-xl sm:text-2xl font-extrabold text-slate-900 mt-2">
+                                    Báo Cáo Kết Quả Kinh Doanh Chuỗi 18 Cửa Hàng Phúc An
+                                </h2>
+                                <p id="report-meta-subtitle" class="text-xs text-slate-500 mt-1">
+                                    Kỳ báo cáo: 2026-Q1 • So sánh với: 2025-Q4
+                                </p>
+                            </div>
+
+                            <div class="space-y-2">
+                                <h3 class="font-extrabold text-rose-600 text-xs uppercase tracking-wider">1. Tóm Tắt Tình Hình Chung</h3>
+                                <p id="report-exec-summary" class="text-xs sm:text-sm text-slate-700 leading-relaxed bg-rose-50/50 p-4 rounded-2xl border border-rose-100">
+                                    Toàn chuỗi 18 cửa hàng Phúc An Retail đạt <strong>Doanh thu thuần 10,44 Tỷ VNĐ</strong> (hoàn thành <strong>88.35%</strong> kế hoạch) và <strong>Lợi nhuận gộp 3,74 Tỷ VNĐ</strong> (tỷ lệ lãi gộp bình quân <strong>35.82%</strong>). Tỷ lệ khách trả hàng ở mức <strong>2.21%</strong>.
+                                </p>
+                            </div>
+
+                            <div class="space-y-3">
+                                <h3 class="font-extrabold text-purple-600 text-xs uppercase tracking-wider">2. Cơ Cấu Doanh Thu Theo 5 Ngành Hàng</h3>
+                                <div class="overflow-x-auto rounded-2xl border border-purple-100">
+                                    <table class="w-full text-left text-xs">
+                                        <thead class="bg-purple-50 text-purple-950 font-extrabold">
+                                            <tr>
+                                                <th class="py-2.5 px-3">Ngành hàng</th>
+                                                <th class="py-2.5 px-3 text-right">Doanh thu</th>
+                                                <th class="py-2.5 px-3 text-right">Lãi gộp</th>
+                                                <th class="py-2.5 px-3 text-center">Tỷ trọng</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="report-category-tbody" class="divide-y divide-purple-50"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <div class="space-y-3">
+                                <h3 class="font-extrabold text-emerald-700 text-xs uppercase tracking-wider">3. Kế Hoạch Hỗ Trợ Top 3 Cửa Hàng Trọng Điểm</h3>
+                                <div id="report-action-cards" class="space-y-3"></div>
+                                <div class="p-4 rounded-2xl bg-amber-50 border border-amber-200 text-xs sm:text-sm text-amber-950">
+                                    <strong><i class="fa-solid fa-pen-nib mr-1 text-amber-600"></i>Chỉ đạo của Giám đốc:</strong>
+                                    <span id="report-director-note" class="ml-1">Tập trung hỗ trợ chương trình khuyến mãi cuối tuần và kiểm tra lại khâu đổi trả hàng cho 3 cửa hàng trên.</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- ===================================================================== -->
+    <!-- CỬA SỔ BÁO LỖI LỚN & BẮT BUỘC QUAY LẠI BƯỚC TRƯỚC KHI BẤM "KHÔNG"     -->
+    <!-- ===================================================================== -->
+    <div id="modal-big-error" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-lg w-full p-7 sm:p-8 border-4 border-rose-500 shadow-2xl space-y-5 animate-pop-in">
+            <div class="flex items-center gap-4">
+                <div class="w-16 h-16 rounded-3xl bg-rose-100 text-rose-600 flex items-center justify-center text-3xl shrink-0">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                </div>
+                <div>
+                    <span id="modal-error-tag" class="px-3 py-0.5 rounded-full bg-rose-100 text-rose-700 text-xs font-extrabold uppercase">
+                        Báo Lỗi Dữ Liệu (Nhánh "Không")
+                    </span>
+                    <h3 id="modal-error-title" class="text-xl font-extrabold text-rose-950 mt-1">
+                        Dữ liệu không hợp lệ!
+                    </h3>
+                </div>
+            </div>
+
+            <div class="p-4 rounded-2xl bg-rose-50 border border-rose-200 space-y-2">
+                <div class="text-xs font-extrabold text-rose-900 uppercase">Chi tiết lỗi cần sửa:</div>
+                <ul id="modal-error-reasons" class="space-y-1.5 text-xs sm:text-sm text-rose-800 font-semibold list-disc list-inside"></ul>
+            </div>
+
+            <p class="text-xs text-slate-600 font-medium">
+                Hệ thống không thể chạy tiếp khi dữ liệu bị lỗi. Bấm nút bên dưới để quay lại <strong>Bước 1</strong> và gửi lại file khác.
+            </p>
+
+            <button type="button" onclick="closeErrorModalAndReturnStep1()"
+                    class="w-full py-4 rounded-2xl bg-rose-600 hover:bg-rose-700 text-white font-extrabold text-sm shadow-lg transition flex items-center justify-center gap-2">
+                <i class="fa-solid fa-arrow-left"></i>
+                <span>Quay lại Bước 1 để gửi lại file</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- ===================================================================== -->
+    <!-- MODAL CẤU HÌNH SERVER LOCALHOST                                       -->
+    <!-- ===================================================================== -->
+    <div id="modal-api-config" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-md w-full p-6 border-2 border-sky-200 shadow-2xl space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                <h3 class="font-extrabold text-slate-900 text-base flex items-center gap-2">
+                    <i class="fa-solid fa-server text-sky-600"></i>
+                    <span>Kết Nối Backend Localhost</span>
+                </h3>
+                <button type="button" onclick="closeApiModal()" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-rose-100 text-slate-500 flex items-center justify-center">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <p class="text-xs text-slate-600 leading-relaxed">
+                Nhập địa chỉ Backend của bạn (ví dụ <code>http://localhost:8000</code>). Nếu để trống, ứng dụng tự động chạy trực tiếp trên trình duyệt.
+            </p>
+            <input type="text" id="input-api-base-url" placeholder="http://localhost:8000"
+                   class="w-full px-4 py-2.5 rounded-2xl bg-sky-50/60 border border-sky-200 text-xs text-slate-800 focus:outline-none focus:border-sky-400">
+            <div class="flex justify-end gap-2 pt-1">
+                <button type="button" onclick="closeApiModal()" class="px-4 py-2 rounded-full bg-slate-100 text-slate-600 text-xs font-bold">Đóng</button>
+                <button type="button" onclick="saveApiBaseUrl()" class="px-5 py-2 rounded-full btn-pastel-primary text-white text-xs font-extrabold">Lưu cấu hình</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Thông Báo -->
+    <div id="toast-box" class="fixed bottom-5 right-5 z-50 hidden max-w-sm bg-white border-2 border-purple-200 rounded-2xl px-4 py-3 shadow-xl flex items-center gap-3 text-xs font-bold text-slate-800">
+        <span class="w-8 h-8 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center shrink-0">
+            <i class="fa-solid fa-sparkles"></i>
+        </span>
+        <span id="toast-message">Thông báo</span>
+    </div>
+
+    <!-- ===================================================================== -->
+    <!-- JAVASCRIPT XỬ LÝ QUY TRÌNH, BIỂU ĐỒ & LINK HTML                       -->
+    <!-- ===================================================================== -->
+    <script>
+        let API_BASE_URL = '';
+        let sourceTabMode = 'file';
+        let uploadedSingleFile = null;
+        let splitFilesMap = {};
+        let isSplitFiveOpen = false;
+        let isSamplePresetLoaded = false;
+
+        let activeAnalyticsData = null;
+        let storesBarChartInstance = null;
+        let categoryDoughnutInstance = null;
+        let generatedBlobUrl = '';
+
+        const fiveFileDefinitions = [
+            { key: 'transactions_file', label: '1. File Bán hàng', hint: 'transactions.csv' },
+            { key: 'returns_file', label: '2. File Đổi trả', hint: 'returns.csv' },
+            { key: 'products_file', label: '3. File Sản phẩm & Giá vốn', hint: 'products_cogs.xlsx' },
+            { key: 'stores_file', label: '4. File 18 Cửa hàng', hint: 'stores_info.csv' },
+            { key: 'targets_file', label: '5. File Chỉ tiêu tháng', hint: 'stores_targets.xlsx' }
+        ];
+
+        const standardRetailDataset = {
+            chain_kpi: {
+                total_net_revenue: 10436575000,
+                total_gross_profit: 3738163000,
+                total_target_revenue: 11812000000,
+                total_target_profit: 4488560000,
+                revenue_completion_pct: 88.35,
+                profit_completion_pct: 83.25,
+                average_margin_pct: 35.82,
+                chain_return_rate_pct: 2.21,
+                store_count: 18
+            },
+            top_priority_stores: [
+                {
+                    store_id: "PA_HN05",
+                    store_name: "Phúc An Hà Đông",
+                    region: "Miền Bắc",
+                    priority_score: 38.65,
+                    net_revenue: 321450000,
+                    target_rev_completion_pct: 61.2,
+                    gross_margin_pct: 35.1,
+                    rev_growth_pct: -38.2,
+                    return_rate_pct: 2.1,
+                    diagnosis_reasons: ["Mới đạt 61.2% chỉ tiêu doanh thu", "Doanh số giảm 38.2% so với kỳ trước"],
+                    action_items: ["Tổ chức khuyến mãi cuối tuần hút khách khu vực Hà Đông", "Kiểm tra lại lượng khách ra vào cửa hàng"]
+                },
+                {
+                    store_id: "PA_HN02",
+                    store_name: "Phúc An Cầu Giấy",
+                    region: "Miền Bắc",
+                    priority_score: 34.40,
+                    net_revenue: 418900000,
+                    target_rev_completion_pct: 67.8,
+                    gross_margin_pct: 33.4,
+                    rev_growth_pct: -24.5,
+                    return_rate_pct: 3.8,
+                    diagnosis_reasons: ["Khách trả hàng cao bất thường (3.8%)", "Hụt 32.2% chỉ tiêu lợi nhuận gộp"],
+                    action_items: ["Kiểm tra lại chất lượng hàng & tư vấn đúng cho khách", "Đẩy mạnh bán thêm nhóm Hóa mỹ phẩm lãi cao"]
+                },
+                {
+                    store_id: "PA_SG09",
+                    store_name: "Phúc An Quận 7",
+                    region: "Miền Nam",
+                    priority_score: 31.80,
+                    net_revenue: 485200000,
+                    target_rev_completion_pct: 72.0,
+                    gross_margin_pct: 34.0,
+                    rev_growth_pct: -15.4,
+                    return_rate_pct: 1.9,
+                    diagnosis_reasons: ["Mới đạt 72.0% chỉ tiêu doanh thu", "Lượng khách quay lại giảm 15.4%"],
+                    action_items: ["Gửi voucher ưu đãi qua Zalo cho khách quanh Quận 7", "Bày lại quầy Thời trang & Tiêu dùng ra mặt tiền"]
+                }
+            ],
+            category_metrics: [
+                { category: "Điện gia dụng", net_revenue: 3200000000, gross_profit: 1100000000, margin_pct: 34.38, rev_share_pct: 30.6 },
+                { category: "Thời trang", net_revenue: 2600000000, gross_profit: 1040000000, margin_pct: 40.00, rev_share_pct: 24.9 },
+                { category: "Hóa mỹ phẩm", net_revenue: 2100000000, gross_profit: 750000000, margin_pct: 35.71, rev_share_pct: 20.1 },
+                { category: "Thiết bị số", net_revenue: 1500000000, gross_profit: 450000000, margin_pct: 30.00, rev_share_pct: 14.4 },
+                { category: "Tiêu dùng", net_revenue: 1036575000, gross_profit: 398163000, margin_pct: 38.41, rev_share_pct: 10.0 }
+            ],
+            store_metrics: [
+                { store_id: "PA_HN05", store_name: "Phúc An Hà Đông", region: "Miền Bắc", net_revenue: 321450000, target_rev_completion_pct: 61.2, gross_margin_pct: 35.1, rev_growth_pct: -38.2, return_rate_pct: 2.1, priority_score: 38.65, priority: true },
+                { store_id: "PA_HN02", store_name: "Phúc An Cầu Giấy", region: "Miền Bắc", net_revenue: 418900000, target_rev_completion_pct: 67.8, gross_margin_pct: 33.4, rev_growth_pct: -24.5, return_rate_pct: 3.8, priority_score: 34.40, priority: true },
+                { store_id: "PA_SG09", store_name: "Phúc An Quận 7", region: "Miền Nam", net_revenue: 485200000, target_rev_completion_pct: 72.0, gross_margin_pct: 34.0, rev_growth_pct: -15.4, return_rate_pct: 1.9, priority_score: 31.80, priority: true },
+                { store_id: "PA_SG01", store_name: "Phúc An Quận 1", region: "Miền Nam", net_revenue: 980500000, target_rev_completion_pct: 106.5, gross_margin_pct: 37.8, rev_growth_pct: 14.2, return_rate_pct: 1.1, priority_score: 4.20, priority: false },
+                { store_id: "PA_HN01", store_name: "Phúc An Hoàn Kiếm", region: "Miền Bắc", net_revenue: 865000000, target_rev_completion_pct: 98.4, gross_margin_pct: 36.9, rev_growth_pct: 9.8, return_rate_pct: 1.4, priority_score: 6.50, priority: false },
+                { store_id: "PA_SG02", store_name: "Phúc An Quận 3", region: "Miền Nam", net_revenue: 790200000, target_rev_completion_pct: 96.8, gross_margin_pct: 37.1, rev_growth_pct: 10.4, return_rate_pct: 1.3, priority_score: 7.10, priority: false },
+                { store_id: "PA_DN01", store_name: "Phúc An Hải Châu", region: "Miền Trung", net_revenue: 685000000, target_rev_completion_pct: 95.6, gross_margin_pct: 36.5, rev_growth_pct: 8.1, return_rate_pct: 1.5, priority_score: 8.40, priority: false },
+                { store_id: "PA_HP01", store_name: "Phúc An Ngô Quyền", region: "Miền Bắc", net_revenue: 642000000, target_rev_completion_pct: 93.2, gross_margin_pct: 36.1, rev_growth_pct: 6.2, return_rate_pct: 1.6, priority_score: 9.80, priority: false },
+                { store_id: "PA_SG03", store_name: "Phúc An Phú Nhuận", region: "Miền Nam", net_revenue: 632000000, target_rev_completion_pct: 91.5, gross_margin_pct: 35.9, rev_growth_pct: 4.0, return_rate_pct: 1.8, priority_score: 11.00, priority: false },
+                { store_id: "PA_HN03", store_name: "Phúc An Đống Đa", region: "Miền Bắc", net_revenue: 615400000, target_rev_completion_pct: 91.0, gross_margin_pct: 35.5, rev_growth_pct: 3.2, return_rate_pct: 1.8, priority_score: 11.40, priority: false },
+                { store_id: "PA_KH01", store_name: "Phúc An Nha Trang", region: "Miền Trung", net_revenue: 595600000, target_rev_completion_pct: 90.4, gross_margin_pct: 36.1, rev_growth_pct: 4.9, return_rate_pct: 1.9, priority_score: 12.10, priority: false },
+                { store_id: "PA_QN01", store_name: "Phúc An Hạ Long", region: "Miền Bắc", net_revenue: 575300000, target_rev_completion_pct: 89.2, gross_margin_pct: 35.7, rev_growth_pct: 2.1, return_rate_pct: 2.0, priority_score: 13.00, priority: false },
+                { store_id: "PA_SG04", store_name: "Phúc An Bình Thạnh", region: "Miền Nam", net_revenue: 560400000, target_rev_completion_pct: 88.9, gross_margin_pct: 35.4, rev_growth_pct: 1.5, return_rate_pct: 2.1, priority_score: 14.20, priority: false },
+                { store_id: "PA_DN02", store_name: "Phúc An Thanh Khê", region: "Miền Trung", net_revenue: 530900000, target_rev_completion_pct: 85.0, gross_margin_pct: 35.0, rev_growth_pct: -2.8, return_rate_pct: 2.4, priority_score: 16.90, priority: false },
+                { store_id: "PA_HN04", store_name: "Phúc An Long Biên", region: "Miền Bắc", net_revenue: 510800000, target_rev_completion_pct: 84.5, gross_margin_pct: 34.8, rev_growth_pct: -4.1, return_rate_pct: 2.3, priority_score: 17.80, priority: false },
+                { store_id: "PA_HP02", store_name: "Phúc An Hải Phòng", region: "Miền Bắc", net_revenue: 492000000, target_rev_completion_pct: 83.8, gross_margin_pct: 34.9, rev_growth_pct: -4.8, return_rate_pct: 2.4, priority_score: 18.60, priority: false },
+                { store_id: "PA_BD01", store_name: "Phúc An Thủ Dầu Một", region: "Miền Nam", net_revenue: 465100000, target_rev_completion_pct: 82.1, gross_margin_pct: 34.6, rev_growth_pct: -5.9, return_rate_pct: 2.5, priority_score: 20.10, priority: false },
+                { store_id: "PA_CT01", store_name: "Phúc An Ninh Kiều", region: "Miền Nam", net_revenue: 470925000, target_rev_completion_pct: 80.5, gross_margin_pct: 34.2, rev_growth_pct: -7.1, return_rate_pct: 2.6, priority_score: 21.80, priority: false }
+            ],
+            quarantine_records: [
+                { id: "Dòng #12", rule: "Trùng mã đơn", ref: "TXN-88412", file: "transactions.csv", reason: "Đơn hàng bị ghi lặp lại 2 lần giống hệt nhau nên AI đã bỏ bớt 1 đơn." },
+                { id: "Dòng #45", rule: "Trùng nội dung", ref: "TXN-88499", file: "transactions.csv", reason: "Cùng cửa hàng, cùng sản phẩm và số tiền trong 1 phút nên AI loại đơn trùng." },
+                { id: "Dòng #78", rule: "Đơn đã hủy", ref: "TXN-88510", file: "transactions.csv", reason: "Khách đã hủy đơn (CANCELLED) nên không tính vào doanh thu." },
+                { id: "Dòng #104", rule: "Sai mã cửa hàng", ref: "TXN-88601", file: "transactions.csv", reason: "Mã cửa hàng PA_TEST99 không nằm trong 18 cửa hàng thật của Phúc An." },
+                { id: "Dòng #219", rule: "Thiếu giá vốn", ref: "SKU-4409", file: "products_cogs.xlsx", reason: "Sản phẩm chưa nhập giá vốn (bằng 0) nên tách riêng để tránh tính sai lãi." },
+                { id: "Dòng #302", rule: "Trả quá số mua", ref: "RET-0912", file: "returns.csv", reason: "Khách mua 2 cái nhưng phiếu ghi trả 5 cái nên AI giữ lại để kiểm tra." }
+            ]
+        };
+
+        function updateSmartGuide(stepNum, themeClass, iconClass, text, actionLabel = '', actionFn = null) {
+            const banner = document.getElementById('smart-guide-banner');
+            banner.className = `${themeClass} rounded-3xl p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-sm transition-all duration-300`;
+            document.getElementById('guide-step-pill').innerText = stepNum;
+            document.getElementById('guide-icon-box').innerHTML = `<i class="${iconClass}"></i>`;
+            document.getElementById('guide-instruction-text').innerText = text;
+
+            const quickBtn = document.getElementById('guide-quick-action-btn');
+            if (actionLabel && actionFn) {
+                quickBtn.classList.remove('hidden');
+                quickBtn.innerHTML = `<i class="fa-solid fa-wand-magic-sparkles"></i><span>${actionLabel}</span>`;
+                quickBtn.onclick = actionFn;
+            } else {
+                quickBtn.classList.add('hidden');
+            }
+        }
+
+        function quickTrySampleFromCover() {
+            document.getElementById('workspace-anchor').scrollIntoView({ behavior: 'smooth' });
+            loadStandardSamplePreset();
+            startPipelineExecution();
+        }
+
+        const allNodeIds = [
+            'node-template', 'node-ingest', 'node-cleaning', 'node-error',
+            'node-process', 'node-feedback', 'node-verify',
+            'node-export-html', 'node-dashboard', 'node-report'
+        ];
+
+        function resetAllFlowNodes() {
+            allNodeIds.forEach(id => {
+                const el = document.getElementById(id);
+                if (!el) return;
+                el.classList.remove('node-running', 'node-success', 'node-error');
+                if (id === 'node-error') {
+                    el.className = 'col-span-3 flow-node bg-slate-100 border border-slate-200 text-slate-500 p-2.5 rounded-2xl text-center';
+                } else {
+                    el.classList.add('opacity-65');
+                }
+            });
+            document.getElementById('node-error-sub').innerText = 'Nhánh "Không"';
+        }
+
+        function setFlowNodeState(nodeId, state) {
+            const el = document.getElementById(nodeId);
+            if (!el) return;
+            el.classList.remove('opacity-65', 'node-running', 'node-success', 'node-error');
+            if (state === 'running') el.classList.add('node-running');
+            if (state === 'success') el.classList.add('node-success');
+            if (state === 'error') el.classList.add('node-error');
+        }
+
+        function setSourceTab(mode) {
+            sourceTabMode = mode;
+            document.getElementById('panel-source-file').classList.toggle('hidden', mode !== 'file');
+            document.getElementById('panel-source-link').classList.toggle('hidden', mode !== 'link');
+
+            document.getElementById('tab-source-file').className = mode === 'file'
+                ? 'py-2 rounded-xl bg-white text-rose-700 shadow-sm transition flex items-center justify-center gap-1.5'
+                : 'py-2 rounded-xl text-slate-500 hover:text-slate-800 transition flex items-center justify-center gap-1.5';
+
+            document.getElementById('tab-source-link').className = mode === 'link'
+                ? 'py-2 rounded-xl bg-white text-rose-700 shadow-sm transition flex items-center justify-center gap-1.5'
+                : 'py-2 rounded-xl text-slate-500 hover:text-slate-800 transition flex items-center justify-center gap-1.5';
+
+            checkInputReadyState();
+        }
+
+        function onSelectSingleFile(e) {
+            const file = e.target.files[0];
+            if (file) applySingleUploadedFile(file);
+        }
+
+        function onDropSingleFile(e) {
+            e.preventDefault();
+            e.currentTarget.classList.remove('border-rose-500', 'bg-white');
+            const file = e.dataTransfer.files[0];
+            if (file) applySingleUploadedFile(file);
+        }
+
+        function applySingleUploadedFile(file) {
+            uploadedSingleFile = file;
+            isSamplePresetLoaded = false;
+            const box = document.getElementById('dropzone-single');
+            box.className = 'p-5 rounded-2xl border-2 border-emerald-400 bg-white cursor-pointer transition text-center space-y-2 shadow-sm';
+            document.getElementById('dropzone-icon').className = 'w-12 h-12 mx-auto rounded-2xl bg-emerald-100 text-emerald-600 flex items-center justify-center text-xl';
+            document.getElementById('dropzone-icon').innerHTML = '<i class="fa-solid fa-file-circle-check"></i>';
+            document.getElementById('dropzone-title').innerText = file.name;
+            document.getElementById('dropzone-sub').innerHTML = `<span class="text-emerald-700 font-bold">Đã nhận tệp (${(file.size / 1024).toFixed(1)} KB) • Bấm để đổi tệp khác</span>`;
+            checkInputReadyState();
+            updateSmartGuide(
+                'Sẵn sàng Bước 2',
+                'pastel-mint',
+                'fa-solid fa-play',
+                `Đã nhận tệp "${file.name}". Bây giờ hãy bấm nút "CHẠY AI LÀM SẠCH & PHÂN TÍCH" ở cột bên trái!`,
+                'Chạy AI ngay',
+                () => startPipelineExecution()
+            );
+        }
+
+        function toggleSplitFiveFiles() {
+            isSplitFiveOpen = !isSplitFiveOpen;
+            const container = document.getElementById('split-five-container');
+            const btn = document.getElementById('btn-split-5');
+            container.classList.toggle('hidden', !isSplitFiveOpen);
+            btn.innerHTML = isSplitFiveOpen
+                ? '<i class="fa-solid fa-compress mr-1"></i>Thu gọn về 1 file'
+                : '<i class="fa-solid fa-layer-group mr-1"></i>Mở ô nạp 5 file lẻ';
+        }
+
+        function renderSplitFiveFileInputs() {
+            const container = document.getElementById('split-five-container');
+            container.innerHTML = fiveFileDefinitions.map(item => {
+                const f = splitFilesMap[item.key];
+                return `
+                    <div onclick="document.getElementById('file-${item.key}').click()"
+                         class="p-2.5 rounded-2xl border ${f ? 'border-emerald-300 bg-white' : 'border-rose-200 bg-white/85 hover:bg-white'} cursor-pointer transition flex items-center justify-between gap-2">
+                        <div class="min-w-0">
+                            <div class="text-xs font-extrabold text-slate-800 truncate">${item.label}</div>
+                            <div class="text-[11px] ${f ? 'text-emerald-700 font-bold' : 'text-slate-400'} truncate">${f ? f.name : item.hint}</div>
+                        </div>
+                        <span class="px-2.5 py-1 rounded-full ${f ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-700'} text-[11px] font-extrabold shrink-0">
+                            ${f ? 'Xong' : 'Chọn'}
+                        </span>
+                        <input type="file" id="file-${item.key}" accept=".csv,.xlsx,.xls" class="hidden" onchange="onSelectSplitFile('${item.key}', event)">
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function onSelectSplitFile(key, e) {
+            const file = e.target.files[0];
+            if (file) {
+                splitFilesMap[key] = file;
+                isSamplePresetLoaded = false;
+                renderSplitFiveFileInputs();
+                checkInputReadyState();
+            }
+        }
+
+        function loadStandardSamplePreset() {
+            isSamplePresetLoaded = true;
+            uploadedSingleFile = null;
+            setSourceTab('file');
+            const box = document.getElementById('dropzone-single');
+            box.className = 'p-5 rounded-2xl border-2 border-purple-400 bg-white cursor-pointer transition text-center space-y-2 shadow-sm';
+            document.getElementById('dropzone-icon').className = 'w-12 h-12 mx-auto rounded-2xl bg-purple-100 text-purple-600 flex items-center justify-center text-xl';
+            document.getElementById('dropzone-icon').innerHTML = '<i class="fa-solid fa-database"></i>';
+            document.getElementById('dropzone-title').innerText = 'DuLieu_Mau_18CuaHang_PhucAn.xlsx';
+            document.getElementById('dropzone-sub').innerHTML = '<span class="text-purple-700 font-bold">Đã nạp sẵn dữ liệu 18 cửa hàng (kèm 6 dòng mẫu lỗi)</span>';
+            checkInputReadyState();
+            updateSmartGuide(
+                'Sẵn sàng Bước 2',
+                'pastel-mint',
+                'fa-solid fa-wand-magic-sparkles',
+                'Đã nạp xong dữ liệu mẫu 18 cửa hàng! Hãy bấm nút "CHẠY AI LÀM SẠCH & PHÂN TÍCH" ở bên trái nhé.',
+                'Chạy AI Phân Tích Ngay',
+                () => startPipelineExecution()
+            );
+            showToast('Đã nạp dữ liệu mẫu 18 cửa hàng Phúc An!');
+        }
+
+        function checkInputReadyState() {
+            const box = document.getElementById('readiness-status-box');
+            const btn = document.getElementById('btn-start-agent');
+            let ready = false;
+            let message = '';
+
+            if (isSamplePresetLoaded) {
+                ready = true;
+                message = 'Đã sẵn sàng! Bấm nút bên dưới để AI chạy ngay.';
+            } else if (sourceTabMode === 'file') {
+                const countSplit = Object.keys(splitFilesMap).length;
+                if (uploadedSingleFile) {
+                    ready = true;
+                    message = `Đã nhận file "${uploadedSingleFile.name}". Bấm nút bên dưới!`;
+                } else if (countSplit > 0) {
+                    ready = true;
+                    message = `Đã chọn ${countSplit}/5 file lẻ. Bấm nút bên dưới!`;
+                } else {
+                    message = 'Chưa có file. Hãy chọn file hoặc bấm "Dùng mẫu".';
+                }
+            } else if (sourceTabMode === 'link') {
+                const url = document.getElementById('input-cloud-url').value.trim();
+                if (url.length > 5) {
+                    ready = true;
+                    message = 'Đã nhận đường link. Bấm nút bên dưới để AI đọc dữ liệu!';
+                } else {
+                    message = 'Hãy dán đường link Google Sheet hoặc Lark Base vào ô trên.';
+                }
+            }
+
+            btn.disabled = !ready;
+            if (ready) {
+                box.className = 'px-3.5 py-2.5 rounded-2xl bg-emerald-50 text-emerald-800 border border-emerald-300 text-xs font-bold flex items-center gap-2';
+                box.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-600"></i><span>${message}</span>`;
+            } else {
+                box.className = 'px-3.5 py-2.5 rounded-2xl bg-white/90 text-slate-600 text-xs font-semibold flex items-center gap-2';
+                box.innerHTML = `<i class="fa-solid fa-circle-info text-rose-500"></i><span>${message}</span>`;
+            }
+        }
+
+        function addLogLine(msg, color = 'text-slate-700') {
+            const logBox = document.getElementById('system-execution-log');
+            if (logBox.querySelector('.italic')) logBox.innerHTML = '';
+            const row = document.createElement('div');
+            row.className = `${color} font-semibold`;
+            row.innerHTML = `• ${msg}`;
+            logBox.appendChild(row);
+            logBox.scrollTop = logBox.scrollHeight;
+        }
+
+        function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+        // Kích hoạt báo lỗi lớn và yêu cầu quay lại Bước 1
+        function triggerBigErrorModal(tagText, titleText, reasonsList) {
+            document.getElementById('modal-error-tag').innerText = tagText;
+            document.getElementById('modal-error-title').innerText = titleText;
+            document.getElementById('modal-error-reasons').innerHTML = reasonsList.map(r => `<li>${r}</li>`).join('');
+            document.getElementById('modal-big-error').classList.remove('hidden');
+        }
+
+        function closeErrorModalAndReturnStep1() {
+            document.getElementById('modal-big-error').classList.add('hidden');
+            resetEntirePipeline();
+            showToast('Đã quay lại Bước 1. Mời bạn gửi lại file dữ liệu chuẩn!');
+        }
+
+        function runSimulationScenario(type) {
+            if (type === 'ERR_INGEST') {
+                setSourceTab('link');
+                document.getElementById('input-cloud-url').value = 'https://docs.google.com/spreadsheets/d/link-bi-loi';
+                checkInputReadyState();
+                startPipelineExecution('ERR_INGEST');
+            } else if (type === 'ERR_CLEAN') {
+                loadStandardSamplePreset();
+                startPipelineExecution('ERR_CLEAN');
+            }
+        }
+
+        async function startPipelineExecution(forcedScenario = null) {
+            const btn = document.getElementById('btn-start-agent');
+            const btnText = document.getElementById('btn-start-text');
+            const btnIcon = document.getElementById('btn-start-icon');
+
+            btn.disabled = true;
+            btnIcon.className = 'fa-solid fa-spinner fa-spin';
+            resetAllFlowNodes();
+            lockVerifyCard();
+
+            document.getElementById('log-session-tag').innerText = 'ĐANG CHẠY';
+            document.getElementById('system-execution-log').innerHTML = '';
+
+            // 1. Dừng AI Template
+            setFlowNodeState('node-template', 'running');
+            addLogLine('Chuẩn bị mẫu nhận dữ liệu...', 'text-rose-600');
+            await sleep(250);
+            setFlowNodeState('node-template', 'success');
+
+            // 2. Kiểm tra nguồn dữ liệu
+            setFlowNodeState('node-ingest', 'running');
+            addLogLine('Đang đọc file / đường link của bạn...', 'text-rose-600');
+            await sleep(320);
+
+            const urlVal = document.getElementById('input-cloud-url').value.trim();
+            const isIngestInvalid = forcedScenario === 'ERR_INGEST' ||
+                (sourceTabMode === 'link' && !isSamplePresetLoaded && (!urlVal.startsWith('http') || urlVal.includes('loi') || urlVal.includes('error'))) ||
+                (uploadedSingleFile && uploadedSingleFile.name.toLowerCase().includes('loi'));
+
+            if (isIngestInvalid) {
+                setFlowNodeState('node-ingest', 'error');
+                setFlowNodeState('node-error', 'error');
+                document.getElementById('node-error-sub').innerText = 'Lỗi đọc file / link!';
+                document.getElementById('log-session-tag').innerText = 'BÁO LỖI';
+                addLogLine('BÁO LỖI: Không đọc được file hoặc đường link bị khóa quyền!', 'text-rose-600');
+
+                btnIcon.className = 'fa-solid fa-wand-magic-sparkles';
+                btnText.innerText = 'CHẠY AI LÀM SẠCH & PHÂN TÍCH';
+                btn.disabled = false;
+
+                triggerBigErrorModal(
+                    'Nhánh "Không" • Lỗi Đọc Dữ Liệu',
+                    'Không Mở Được File Hoặc Đường Link!',
+                    [
+                        'Đường link Google Sheet chưa bật chế độ chia sẻ công khai, hoặc đường link bị sai.',
+                        'Tệp tin tải lên bị rỗng hoặc sai định dạng (.xlsx, .xls, .csv).',
+                        'Vui lòng bấm nút bên dưới để quay lại Bước 1 và gửi lại file khác.'
+                    ]
+                );
+                return;
+            }
+
+            setFlowNodeState('node-ingest', 'success');
+            addLogLine('Đọc dữ liệu thành công (Nhánh "Có").', 'text-emerald-700');
+
+            // 3. Cleaning (Làm sạch)
+            setFlowNodeState('node-cleaning', 'running');
+            addLogLine('Bước 2: AI đang lọc bỏ đơn trùng, đơn hủy & kiểm tra giá vốn...', 'text-emerald-700');
+            await sleep(360);
+
+            const isCleanInvalid = forcedScenario === 'ERR_CLEAN' ||
+                (uploadedSingleFile && uploadedSingleFile.name.toLowerCase().includes('clean_err'));
+
+            if (isCleanInvalid) {
+                setFlowNodeState('node-cleaning', 'error');
+                setFlowNodeState('node-error', 'error');
+                document.getElementById('node-error-sub').innerText = 'Thiếu giá vốn!';
+                document.getElementById('log-session-tag').innerText = 'BÁO LỖI';
+                addLogLine('BÁO LỖI LÀM SẠCH: Quá nhiều sản phẩm thiếu giá vốn (COGS = 0)!', 'text-rose-600');
+
+                btnIcon.className = 'fa-solid fa-wand-magic-sparkles';
+                btnText.innerText = 'CHẠY AI LÀM SẠCH & PHÂN TÍCH';
+                btn.disabled = false;
+
+                triggerBigErrorModal(
+                    'Nhánh "Không" • Lỗi Làm Sạch Dữ Liệu',
+                    'Dữ Liệu Thiếu Quá Nhiều Thông Tin Giá Vốn!',
+                    [
+                        'Hơn 45% dòng hàng trong tệp bị trống cột Giá Vốn (COGS). AI không được tự bịa số liệu.',
+                        'Nhiều mã cửa hàng không nằm trong danh sách 18 cửa hàng thật của Phúc An.',
+                        'Vui lòng bổ sung đầy đủ cột giá vốn và quay lại Bước 1 để gửi lại file.'
+                    ]
+                );
+                return;
+            }
+
+            setFlowNodeState('node-cleaning', 'success');
+            addLogLine('Làm sạch xong! Giữ lại 5,994 đơn chuẩn và tách riêng 6 đơn lỗi.', 'text-emerald-700');
+
+            if (API_BASE_URL) {
+                try {
+                    const res = await fetch(`${API_BASE_URL}/api/load-sample`, { method: 'POST' });
+                    const json = await res.json();
+                    if (json.state?.analytics_result) {
+                        activeAnalyticsData = json.state.analytics_result;
+                    }
+                } catch (err) {
+                    addLogLine('Đang chạy dữ liệu trực tiếp trên trình duyệt.', 'text-slate-500');
+                }
+            }
+
+            if (!activeAnalyticsData) {
+                activeAnalyticsData = JSON.parse(JSON.stringify(standardRetailDataset));
+            }
+
+            // 4. Process (Phân tích 18 cửa hàng & Vẽ biểu đồ)
+            setFlowNodeState('node-process', 'running');
+            addLogLine('Bước 3: Đang vẽ biểu đồ Dashboard & tìm Top 3 cửa hàng yếu...', 'text-purple-700');
+            await sleep(360);
+            setFlowNodeState('node-process', 'success');
+
+            // 5. Chuyển sang Bước 4 (Verify)
+            setFlowNodeState('node-verify', 'running');
+            document.getElementById('log-session-tag').innerText = 'CHỜ DUYỆT';
+            addLogLine('Bước 4: Đã xong! Mời bạn xem biểu đồ và bấm "Có (Duyệt) ➔ Xuất HTML".', 'text-amber-700');
+
+            updateSmartGuide(
+                'Đang ở Bước 4 / 5',
+                'pastel-butter',
+                'fa-solid fa-check-to-slot',
+                'AI đã vẽ xong biểu đồ Dashboard! Hãy xem bên dưới rồi bấm "Có (Duyệt) ➔ Xuất HTML" để nhận Đường Link Báo Cáo!',
+                'Có (Duyệt) & Xuất Link HTML',
+                () => submitVerifyApproveExport()
+            );
+
+            unlockVerifyCard();
+            showResultsState();
+            renderAllOutputs();
+            switchOutputView('dashboard');
+
+            btnIcon.className = 'fa-solid fa-rotate-right';
+            btnText.innerText = 'CHẠY LẠI TỪ ĐẦU';
+            btn.disabled = false;
+            showToast('Đã vẽ xong Dashboard Biểu Đồ! Hãy bấm duyệt để nhận Link HTML.');
+        }
+
+        function lockVerifyCard() {
+            document.getElementById('verify-gate-pill').innerText = 'Chờ Bước 1-3';
+            document.getElementById('verify-gate-pill').className = 'px-3 py-1 rounded-full text-xs font-extrabold bg-white/85 text-amber-900';
+            document.getElementById('verify-locked-notice').classList.remove('hidden');
+            document.getElementById('verify-active-controls').classList.add('hidden');
+        }
+
+        function unlockVerifyCard() {
+            document.getElementById('verify-gate-pill').innerText = 'Mời bạn duyệt';
+            document.getElementById('verify-gate-pill').className = 'px-3 py-1 rounded-full text-xs font-extrabold bg-white text-rose-600 shadow-sm';
+            document.getElementById('verify-locked-notice').classList.add('hidden');
+            document.getElementById('verify-active-controls').classList.remove('hidden');
+            document.getElementById('banner-pending-verify').classList.remove('hidden');
+
+            document.getElementById('html-link-locked-box').classList.remove('hidden');
+            document.getElementById('html-link-ready-box').classList.add('hidden');
+            document.getElementById('html-link-status-pill').innerText = 'Chưa duyệt ở Bước 4';
+            document.getElementById('html-link-status-pill').className = 'px-3.5 py-1 rounded-full bg-amber-100 text-amber-900 text-xs font-extrabold';
+
+            const listBox = document.getElementById('verify-store-checkboxes');
+            listBox.innerHTML = activeAnalyticsData.store_metrics.map(st => `
+                <label class="flex items-center justify-between p-1.5 rounded-xl hover:bg-amber-50 cursor-pointer">
+                    <div class="flex items-center gap-2">
+                        <input type="checkbox" value="${st.store_id}" ${st.priority ? 'checked' : ''} class="verify-store-cb rounded text-amber-600 focus:ring-amber-400">
+                        <span class="font-bold text-slate-800">${st.store_name}</span>
+                    </div>
+                    ${st.priority
+                        ? '<span class="px-2 py-0.5 rounded-full bg-rose-100 text-rose-700 text-[11px] font-extrabold">AI chọn</span>'
+                        : `<span class="text-[11px] text-slate-400">Đạt ${st.target_rev_completion_pct}%</span>`}
+                </label>
+            `).join('');
+        }
+
+        async function submitVerifyRejectFeedback() {
+            const fbText = document.getElementById('verify-feedback-input').value.trim();
+            if (!fbText) {
+                showToast('Bạn hãy nhập góp ý vào ô trên trước khi bấm Không nhé!');
+                return;
+            }
+
+            setFlowNodeState('node-verify', 'error');
+            setFlowNodeState('node-feedback', 'running');
+            addLogLine(`Bạn bấm "Không": Gửi góp ý "${fbText}" sang Feedback...`, 'text-amber-700');
+
+            await sleep(400);
+            setFlowNodeState('node-feedback', 'success');
+            setFlowNodeState('node-process', 'running');
+            addLogLine('AI đang cập nhật lại biểu đồ và phân tích theo góp ý...', 'text-purple-700');
+
+            await sleep(400);
+            setFlowNodeState('node-process', 'success');
+            setFlowNodeState('node-verify', 'running');
+            addLogLine('Đã cập nhật xong! Mời bạn xem lại và bấm "Có (Duyệt) ➔ Xuất HTML".', 'text-amber-700');
+            showToast('AI đã tính lại kết quả theo góp ý của bạn!');
+        }
+
+        async function submitVerifyApproveExport() {
+            const checkedIds = Array.from(document.querySelectorAll('.verify-store-cb:checked')).map(el => el.value);
+            if (checkedIds.length !== 3) {
+                showToast('Bạn hãy chọn đúng 3 cửa hàng cần hỗ trợ nhé!');
+                return;
+            }
+
+            const chosenStores = activeAnalyticsData.store_metrics
+                .filter(s => checkedIds.includes(s.store_id))
+                .map(s => {
+                    const existing = activeAnalyticsData.top_priority_stores.find(t => t.store_id === s.store_id);
+                    return existing || {
+                        ...s,
+                        diagnosis_reasons: [`Được Giám đốc chọn ưu tiên theo dõi (Đạt ${s.target_rev_completion_pct}% chỉ tiêu)`, `Tăng trưởng so kỳ trước: ${s.rev_growth_pct}%`],
+                        action_items: ["Kiểm tra trực tiếp tình hình bán hàng tại cửa hàng", "Chạy chương trình khuyến mãi hút khách địa phương"]
+                    };
+                });
+            activeAnalyticsData.top_priority_stores = chosenStores;
+
+            const directorNote = document.getElementById('verify-feedback-input').value.trim();
+            document.getElementById('report-director-note').innerText = directorNote || 'Đã phê duyệt danh sách 3 cửa hàng trọng điểm.';
+
+            setFlowNodeState('node-verify', 'success');
+            setFlowNodeState('node-export-html', 'running');
+            addLogLine('Bước 5: Đang tạo Đường Link HTML (Dashboard Biểu Đồ & Báo Cáo)...', 'text-sky-700');
+
+            await sleep(320);
+            setFlowNodeState('node-export-html', 'success');
+            setFlowNodeState('node-dashboard', 'success');
+            setFlowNodeState('node-report', 'success');
+            document.getElementById('log-session-tag').innerText = 'HOÀN THÀNH';
+
+            document.getElementById('verify-gate-pill').innerText = 'Đã duyệt xong ✓';
+            document.getElementById('verify-gate-pill').className = 'px-3 py-1 rounded-full text-xs font-extrabold bg-emerald-100 text-emerald-800';
+            document.getElementById('banner-pending-verify').classList.add('hidden');
+
+            renderAllOutputs();
+            generateAndExposeHtmlUrl();
+            switchOutputView('exporthtml');
+
+            updateSmartGuide(
+                'Hoàn Thành Bước 5 / 5',
+                'pastel-sky',
+                'fa-solid fa-link',
+                'Hoàn tất! Đường Link HTML của bạn đã sẵn sàng bên dưới (bao gồm cả Dashboard Biểu Đồ & Báo Cáo Quản Trị).',
+                'Mở Link HTML Xem Ngay',
+                () => window.open(generatedBlobUrl, '_blank')
+            );
+
+            addLogLine('Hoàn tất! Đã xuất xong Đường Link HTML.', 'text-emerald-700');
+            showToast('Thành công! Đường Link HTML đã sẵn sàng để mở và chia sẻ!');
+        }
+
+        function generateAndExposeHtmlUrl() {
+            const htmlContent = buildStandaloneHtmlString();
+            if (generatedBlobUrl) URL.revokeObjectURL(generatedBlobUrl);
+            const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8' });
+            generatedBlobUrl = URL.createObjectURL(blob);
+
+            document.getElementById('html-link-locked-box').classList.add('hidden');
+            document.getElementById('html-link-ready-box').classList.remove('hidden');
+            document.getElementById('html-link-status-pill').innerText = 'Đã tạo Link thành công ✓';
+            document.getElementById('html-link-status-pill').className = 'px-3.5 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-extrabold';
+
+            document.getElementById('generated-html-link-input').value = generatedBlobUrl;
+            document.getElementById('btn-open-html-new-tab').href = generatedBlobUrl;
+        }
+
+        function copyGeneratedHtmlLink() {
+            const inputEl = document.getElementById('generated-html-link-input');
+            inputEl.select();
+            inputEl.setSelectionRange(0, 99999);
+            document.execCommand('copy');
+            showToast('Đã sao chép Đường Link HTML vào bộ nhớ tạm!');
+        }
+
+        function showEmptyState() {
+            document.getElementById('right-state-empty').classList.remove('hidden');
+            document.getElementById('right-state-results').classList.add('hidden');
+        }
+
+        function showResultsState() {
+            document.getElementById('right-state-empty').classList.add('hidden');
+            document.getElementById('right-state-results').classList.remove('hidden');
+        }
+
+        function resetEntirePipeline() {
+            activeAnalyticsData = null;
+            uploadedSingleFile = null;
+            splitFilesMap = {};
+            isSamplePresetLoaded = false;
+
+            const box = document.getElementById('dropzone-single');
+            box.className = 'p-5 rounded-2xl border-2 border-dashed border-rose-300 bg-white/90 hover:bg-white hover:border-rose-500 cursor-pointer transition text-center space-y-2';
+            document.getElementById('dropzone-icon').className = 'w-12 h-12 mx-auto rounded-2xl bg-rose-100 text-rose-600 flex items-center justify-center text-xl';
+            document.getElementById('dropzone-icon').innerHTML = '<i class="fa-solid fa-cloud-arrow-up"></i>';
+            document.getElementById('dropzone-title').innerText = 'Bấm vào đây để chọn 1 file (.xlsx, .xls, .csv)';
+            document.getElementById('dropzone-sub').innerText = 'Hoặc kéo thả tệp dữ liệu bán hàng của bạn vào ô này';
+            document.getElementById('input-cloud-url').value = '';
+
+            document.getElementById('btn-start-text').innerText = 'CHẠY AI LÀM SẠCH & PHÂN TÍCH';
+            document.getElementById('btn-start-icon').className = 'fa-solid fa-wand-magic-sparkles';
+            document.getElementById('log-session-tag').innerText = 'CHỜ LỆNH';
+            document.getElementById('system-execution-log').innerHTML = '<div class="text-slate-400 italic">• Đang chờ bạn chọn file dữ liệu ở Bước 1...</div>';
+
+            updateSmartGuide(
+                'Đang ở Bước 1 / 5',
+                'pastel-peach',
+                'fa-solid fa-hand-point-right',
+                'Hãy chọn 1 file Excel/CSV của bạn (hoặc bấm nút "Dùng dữ liệu mẫu") ở ô Hồng Đào bên trái để bắt đầu!',
+                'Dùng dữ liệu mẫu ngay',
+                () => loadStandardSamplePreset()
+            );
+
+            resetAllFlowNodes();
+            lockVerifyCard();
+            renderSplitFiveFileInputs();
+            checkInputReadyState();
+            showEmptyState();
+        }
+
+        function switchOutputView(viewName) {
+            if (!activeAnalyticsData) {
+                showToast('Bạn hãy chọn file và bấm Chạy AI ở cột bên trái trước nhé!');
+                return;
+            }
+
+            const tabStyles = {
+                dashboard: {
+                    active: 'out-tab-btn px-5 py-3 rounded-full text-xs sm:text-sm font-extrabold bg-purple-600 text-white shadow-md transition flex items-center gap-2',
+                    inactive: 'out-tab-btn px-5 py-3 rounded-full text-xs sm:text-sm font-extrabold bg-purple-100 text-purple-900 border border-purple-300 hover:bg-purple-200 transition flex items-center gap-2'
+                },
+                quarantine: {
+                    active: 'out-tab-btn px-5 py-3 rounded-full text-xs sm:text-sm font-extrabold bg-emerald-600 text-white shadow-md transition flex items-center gap-2',
+                    inactive: 'out-tab-btn px-5 py-3 rounded-full text-xs sm:text-sm font-extrabold bg-emerald-100 text-emerald-900 border border-emerald-300 hover:bg-emerald-200 transition flex items-center gap-2'
+                },
+                exporthtml: {
+                    active: 'out-tab-btn px-5 py-3 rounded-full text-xs sm:text-sm font-extrabold bg-sky-600 text-white shadow-md transition flex items-center gap-2',
+                    inactive: 'out-tab-btn px-5 py-3 rounded-full text-xs sm:text-sm font-extrabold bg-sky-100 text-sky-900 border border-sky-300 hover:bg-sky-200 transition flex items-center gap-2'
+                }
+            };
+
+            ['dashboard', 'quarantine', 'exporthtml'].forEach(key => {
+                const btn = document.getElementById(`out-tab-${key}`);
+                if (btn) btn.className = (key === viewName) ? tabStyles[key].active : tabStyles[key].inactive;
+            });
+
+            document.querySelectorAll('.output-pane').forEach(p => p.classList.add('hidden'));
+            document.getElementById(`pane-${viewName}`).classList.remove('hidden');
+
+            if (viewName === 'dashboard') {
+                setTimeout(() => renderDashboardCharts(), 50);
+            }
+        }
+
+        function formatVNDShort(val) {
+            if (val >= 1e9) return (val / 1e9).toFixed(2).replace('.', ',') + ' Tỷ';
+            if (val >= 1e6) return (val / 1e6).toFixed(1).replace('.', ',') + ' Tr';
+            return val.toLocaleString('vi-VN') + ' ₫';
+        }
+
+        function renderAllOutputs() {
+            if (!activeAnalyticsData) return;
+            const { chain_kpi, top_priority_stores, store_metrics, category_metrics, quarantine_records } = activeAnalyticsData;
+
+            document.getElementById('kpi-net-rev').innerText = formatVNDShort(chain_kpi.total_net_revenue);
+            document.getElementById('kpi-rev-comp').innerText = `Đạt ${chain_kpi.revenue_completion_pct}% mục tiêu`;
+            document.getElementById('kpi-gross-profit').innerText = formatVNDShort(chain_kpi.total_gross_profit);
+            document.getElementById('kpi-prof-comp').innerText = `Đạt ${chain_kpi.profit_completion_pct}% mục tiêu`;
+            document.getElementById('kpi-margin').innerText = `${chain_kpi.average_margin_pct}%`;
+            document.getElementById('kpi-return').innerText = `${chain_kpi.chain_return_rate_pct}%`;
+            document.getElementById('badge-q-total').innerText = quarantine_records.length;
+            document.getElementById('q-count-inline').innerText = quarantine_records.length;
+
+            // Top 3 Cửa Hàng Đa Sắc Pastel
+            const cardThemes = ['pastel-peach', 'pastel-lavender', 'pastel-sky'];
+            const badges = ['🥇 CẦN CỨU #1', '🥈 CẦN CỨU #2', '🥉 CẦN CỨU #3'];
+            const accentColors = ['text-rose-700', 'text-purple-700', 'text-sky-800'];
+
+            document.getElementById('top3-highlight-grid').innerHTML = top_priority_stores.map((st, idx) => `
+                <div class="rounded-3xl ${cardThemes[idx]} p-5 flex flex-col justify-between space-y-3 shadow-sm">
+                    <div>
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-xs font-extrabold uppercase ${accentColors[idx]}">${badges[idx]}</span>
+                            <span class="px-2.5 py-0.5 rounded-full bg-white text-slate-900 text-xs font-extrabold shadow-sm">Đạt ${st.target_rev_completion_pct}%</span>
+                        </div>
+                        <h4 class="text-base font-extrabold text-slate-900">${st.store_name}</h4>
+                        <div class="mt-2 p-2.5 rounded-2xl bg-white/85 text-xs text-slate-700 space-y-1">
+                            <div><strong>• Nguyên nhân:</strong> ${st.diagnosis_reasons[0]}</div>
+                            <div><strong>• Hành động:</strong> ${st.action_items[0]}</div>
+                        </div>
+                    </div>
+                    <div class="pt-1 flex items-center justify-between text-xs font-extrabold ${accentColors[idx]}">
+                        <span>${st.region}</span>
+                        <span>Doanh thu: ${formatVNDShort(st.net_revenue)}</span>
+                    </div>
+                </div>
+            `).join('');
+
+            const selectedTopIds = top_priority_stores.map(t => t.store_id);
+            document.getElementById('table-18-stores-body').innerHTML = store_metrics.map((st, idx) => {
+                const isTop = selectedTopIds.includes(st.store_id);
+                const targetTag = st.target_rev_completion_pct < 75
+                    ? `<span class="px-2.5 py-0.5 rounded-full bg-rose-100 text-rose-700 font-extrabold">${st.target_rev_completion_pct}%</span>`
+                    : `<span class="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-bold">${st.target_rev_completion_pct}%</span>`;
+
+                const momTag = st.rev_growth_pct < 0
+                    ? `<span class="px-2.5 py-0.5 rounded-full bg-rose-50 text-rose-600 font-bold">${st.rev_growth_pct}%</span>`
+                    : `<span class="px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 font-bold">+${st.rev_growth_pct}%</span>`;
+
+                return `
+                    <tr class="store-row-item hover:bg-purple-50/40 transition" data-region="${st.region}">
+                        <td class="py-3 px-3 font-extrabold text-slate-800 whitespace-nowrap">
+                            <span class="w-5 h-5 rounded-full ${isTop ? 'bg-rose-100 text-rose-700' : 'bg-slate-100 text-slate-500'} text-[11px] inline-flex items-center justify-center mr-1.5">${idx + 1}</span>
+                            ${st.store_name}
+                            <span class="block text-[11px] font-medium text-slate-400 pl-7">${st.region}</span>
+                        </td>
+                        <td class="py-3 px-2.5 text-center font-bold">${formatVNDShort(st.net_revenue)}</td>
+                        <td class="py-3 px-2.5 text-center">${targetTag}</td>
+                        <td class="py-3 px-2.5 text-center"><span class="px-2.5 py-0.5 rounded-full bg-purple-100 text-purple-800 font-bold">${st.gross_margin_pct}%</span></td>
+                        <td class="py-3 px-2.5 text-center">${momTag}</td>
+                        <td class="py-3 px-2.5 text-center font-semibold">${st.return_rate_pct}%</td>
+                        <td class="py-3 px-3 text-right">
+                            ${isTop
+                                ? '<span class="px-2.5 py-1 rounded-full bg-rose-100 text-rose-700 font-extrabold text-[11px]">Cần hỗ trợ gấp</span>'
+                                : '<span class="px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800 font-bold text-[11px]">Đạt tốt</span>'}
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+
+            const pRep = document.getElementById('field-period-report').value;
+            const pComp = document.getElementById('field-period-compare').value;
+            document.getElementById('report-meta-subtitle').innerText = `Kỳ báo cáo: ${pRep} • So sánh với: ${pComp}`;
+
+            document.getElementById('report-category-tbody').innerHTML = category_metrics.map(c => `
+                <tr>
+                    <td class="py-2.5 px-3 font-extrabold text-slate-800">${c.category}</td>
+                    <td class="py-2.5 px-3 text-right font-bold">${formatVNDShort(c.net_revenue)}</td>
+                    <td class="py-2.5 px-3 text-right text-emerald-700 font-bold">${formatVNDShort(c.gross_profit)}</td>
+                    <td class="py-2.5 px-3 text-center"><span class="px-2.5 py-0.5 rounded-full bg-purple-100 text-purple-800 font-extrabold">${c.rev_share_pct}%</span></td>
+                </tr>
+            `).join('');
+
+            document.getElementById('report-action-cards').innerHTML = top_priority_stores.map((st, idx) => `
+                <div class="p-4 rounded-2xl bg-sky-50/70 border border-sky-200 space-y-1 text-xs sm:text-sm">
+                    <div class="font-extrabold text-slate-900">#${idx + 1}. ${st.store_name} (${st.region}) — Đạt ${st.target_rev_completion_pct}% chỉ tiêu</div>
+                    <div class="text-rose-700"><strong>• Nguyên nhân:</strong> ${st.diagnosis_reasons.join('; ')}</div>
+                    <div class="text-emerald-800"><strong>• Đề xuất hành động:</strong> ${st.action_items.join('; ')}</div>
+                </div>
+            `).join('');
+
+            document.getElementById('quarantine-tbody').innerHTML = quarantine_records.map(q => `
+                <tr class="hover:bg-emerald-50/40">
+                    <td class="py-3 px-3 font-bold text-slate-500">${q.id}</td>
+                    <td class="py-3 px-3"><span class="px-2.5 py-0.5 rounded-full bg-rose-100 text-rose-700 font-extrabold text-[11px]">${q.rule}</span></td>
+                    <td class="py-3 px-3 font-mono font-bold text-slate-800">${q.ref}</td>
+                    <td class="py-3 px-3 text-slate-500">${q.file}</td>
+                    <td class="py-3 px-3 text-slate-700 font-medium">${q.reason}</td>
+                </tr>
+            `).join('');
+
+            renderDashboardCharts();
+        }
+
+        // Vẽ 2 biểu đồ thực tế ngay trên Dashboard
+        function renderDashboardCharts() {
+            if (!activeAnalyticsData) return;
+
+            // 1. Biểu đồ cột 18 cửa hàng
+            const barCanvas = document.getElementById('dashboardStoresChart');
+            if (barCanvas) {
+                if (storesBarChartInstance) storesBarChartInstance.destroy();
+                const labels = activeAnalyticsData.store_metrics.map(s => s.store_name.replace('Phúc An ', ''));
+                const values = activeAnalyticsData.store_metrics.map(s => s.target_rev_completion_pct);
+                const colors = values.map(v => v < 75 ? '#fb7185' : (v >= 95 ? '#34d399' : '#a78bfa'));
+
+                storesBarChartInstance = new Chart(barCanvas.getContext('2d'), {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: '% Hoàn thành chỉ tiêu',
+                            data: values,
+                            backgroundColor: colors,
+                            borderRadius: 8
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                max: 120,
+                                ticks: { font: { size: 10, weight: 'bold' }, callback: v => v + '%' },
+                                grid: { color: '#f1f5f9' }
+                            },
+                            x: {
+                                ticks: { font: { size: 9, weight: 'bold' }, maxRotation: 45, minRotation: 45 },
+                                grid: { display: false }
+                            }
+                        }
+                    }
+                });
+            }
+
+            // 2. Biểu đồ tròn 5 ngành hàng
+            const catCanvas = document.getElementById('dashboardCategoryChart');
+            if (catCanvas) {
+                if (categoryDoughnutInstance) categoryDoughnutInstance.destroy();
+                categoryDoughnutInstance = new Chart(catCanvas.getContext('2d'), {
+                    type: 'doughnut',
+                    data: {
+                        labels: activeAnalyticsData.category_metrics.map(c => `${c.category} (${c.rev_share_pct}%)`),
+                        datasets: [{
+                            data: activeAnalyticsData.category_metrics.map(c => c.net_revenue),
+                            backgroundColor: ['#fda4af', '#c4b5fd', '#7dd3fc', '#fde68a', '#6ee7b7'],
+                            borderWidth: 3,
+                            borderColor: '#ffffff'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        cutout: '58%',
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: { boxWidth: 11, font: { family: '"Plus Jakarta Sans"', size: 11, weight: 'bold' } }
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        function filterStoreTable() {
+            const kw = document.getElementById('store-search-input').value.toLowerCase();
+            const reg = document.getElementById('store-region-filter').value;
+            document.querySelectorAll('.store-row-item').forEach(row => {
+                const matchKw = row.innerText.toLowerCase().includes(kw);
+                const matchReg = reg === 'ALL' || row.getAttribute('data-region') === reg;
+                row.style.display = (matchKw && matchReg) ? '' : 'none';
+            });
+        }
+
+        // Xây dựng file HTML xuất bản bao gồm cả DASHBOARD BIỂU ĐỒ & BÁO CÁO QUẢN TRỊ
+        function buildStandaloneHtmlString() {
+            if (!activeAnalyticsData) return '';
+            const { chain_kpi, top_priority_stores, category_metrics, store_metrics } = activeAnalyticsData;
+            const pRep = document.getElementById('field-period-report').value;
+            const directorNote = document.getElementById('report-director-note').innerText;
+
+            const storeLabelsJson = JSON.stringify(store_metrics.map(s => s.store_name.replace('Phúc An ', '')));
+            const storeValuesJson = JSON.stringify(store_metrics.map(s => s.target_rev_completion_pct));
+            const storeColorsJson = JSON.stringify(store_metrics.map(s => s.target_rev_completion_pct < 75 ? '#fb7185' : (s.target_rev_completion_pct >= 95 ? '#34d399' : '#a78bfa')));
+            const catLabelsJson = JSON.stringify(category_metrics.map(c => `${c.category} (${c.rev_share_pct}%)`));
+            const catValuesJson = JSON.stringify(category_metrics.map(c => c.net_revenue));
+
+            return `<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard & Báo Cáo Quản Trị Phúc An Retail - ${pRep}</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"><\/script>
+<style>
+  body { font-family: 'Segoe UI', Arial, sans-serif; background: #faf9fd; color: #334155; padding: 28px; max-width: 1140px; margin: auto; }
+  .hero { background: linear-gradient(135deg, #ffe4e6, #ede9fe, #e0f2fe); padding: 28px; border-radius: 28px; border: 2px solid #ddd6fe; margin-bottom: 24px; }
+  h1 { margin: 0 0 8px; color: #0f172a; font-size: 26px; }
+  .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 16px; margin-bottom: 24px; }
+  .kpi { padding: 18px; border-radius: 24px; border: 2px solid #e2e8f0; }
+  .kpi-1 { background: #fff1f2; border-color: #fda4af; }
+  .kpi-2 { background: #ecfdf5; border-color: #6ee7b7; }
+  .kpi-3 { background: #f5f3ff; border-color: #c4b5fd; }
+  .kpi-4 { background: #fffbeb; border-color: #fcd34d; }
+  .kpi-val { font-size: 26px; font-weight: 800; color: #0f172a; margin-top: 6px; }
+  .charts { display: grid; grid-template-columns: 1.4fr 1fr; gap: 20px; margin-bottom: 24px; }
+  @media (max-width: 768px) { .charts { grid-template-columns: 1fr; } }
+  .card { background: #fff; padding: 22px; border-radius: 26px; border: 1.5px solid #e2e8f0; margin-bottom: 22px; box-shadow: 0 8px 24px rgba(0,0,0,0.04); }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 10px; }
+  th, td { padding: 11px 12px; border-bottom: 1px solid #f1f5f9; text-align: left; }
+  th { background: #f5f3ff; color: #5b21b6; }
+</style>
+</head>
+<body>
+  <div class="hero">
+    <h1>DASHBOARD &amp; BÁO CÁO QUẢN TRỊ 18 CỬA HÀNG PHÚC AN RETAIL</h1>
+    <div>Kỳ báo cáo: <strong>${pRep}</strong> • Trạng thái: <strong>Đã duyệt chính thức</strong></div>
+  </div>
+  <div class="kpis">
+    <div class="kpi kpi-1"><div>Tổng Doanh Thu</div><div class="kpi-val">${formatVNDShort(chain_kpi.total_net_revenue)}</div><div>Đạt ${chain_kpi.revenue_completion_pct}% chỉ tiêu</div></div>
+    <div class="kpi kpi-2"><div>Lợi Nhuận Gộp</div><div class="kpi-val">${formatVNDShort(chain_kpi.total_gross_profit)}</div><div>Đạt ${chain_kpi.profit_completion_pct}% chỉ tiêu</div></div>
+    <div class="kpi kpi-3"><div>Tỷ Lệ Lãi Gộp</div><div class="kpi-val">${chain_kpi.average_margin_pct}%</div><div>Trung bình toàn chuỗi</div></div>
+    <div class="kpi kpi-4"><div>Tỷ Lệ Trả Hàng</div><div class="kpi-val">${chain_kpi.chain_return_rate_pct}%</div><div>Mức an toàn</div></div>
+  </div>
+  <div class="charts">
+    <div class="card"><h3>Biểu Đồ Hoàn Thành Chỉ Tiêu 18 Cửa Hàng (%)</h3><div style="height:260px"><canvas id="c1"></canvas></div></div>
+    <div class="card"><h3>Cơ Cấu Doanh Thu 5 Ngành Hàng</h3><div style="height:260px"><canvas id="c2"></canvas></div></div>
+  </div>
+  <div class="card">
+    <h2>Top 3 Cửa Hàng Cần Ưu Tiên Hỗ Trợ</h2>
+    ${top_priority_stores.map((s, i) => `<p><strong>#${i+1} ${s.store_name} (${s.region}) — Đạt ${s.target_rev_completion_pct}% chỉ tiêu:</strong> ${s.diagnosis_reasons.join(', ')} ➔ <em>${s.action_items.join(', ')}</em></p>`).join('')}
+    <p style="background:#fef3c7;padding:14px;border-radius:16px;color:#78350f;"><strong>Chỉ đạo của Giám đốc:</strong> ${directorNote}</p>
+  </div>
+  <div class="card">
+    <h2>Bảng Kết Quả Chi Tiết 18 Cửa Hàng</h2>
+    <table>
+      <tr><th>Cửa hàng</th><th>Khu vực</th><th>Doanh thu</th><th>Đạt Chỉ Tiêu</th><th>Lãi Gộp</th><th>So Kỳ Trước</th></tr>
+      ${store_metrics.map(s => `<tr><td>${s.store_name}</td><td>${s.region}</td><td>${formatVNDShort(s.net_revenue)}</td><td>${s.target_rev_completion_pct}%</td><td>${s.gross_margin_pct}%</td><td>${s.rev_growth_pct}%</td></tr>`).join('')}
+    </table>
+  </div>
+  <script>
+    new Chart(document.getElementById('c1'), {
+      type: 'bar',
+      data: { labels: ${storeLabelsJson}, datasets: [{ label: '% Chỉ tiêu', data: ${storeValuesJson}, backgroundColor: ${storeColorsJson}, borderRadius: 6 }] },
+      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+    });
+    new Chart(document.getElementById('c2'), {
+      type: 'doughnut',
+      data: { labels: ${catLabelsJson}, datasets: [{ data: ${catValuesJson}, backgroundColor: ['#fda4af','#c4b5fd','#7dd3fc','#fde68a','#6ee7b7'] }] },
+      options: { responsive: true, maintainAspectRatio: false }
+    });
+  <\/script>
+</body>
+</html>`;
+        }
+
+        function downloadStandaloneHtmlReport() {
+            const htmlStr = buildStandaloneHtmlString();
+            if (!htmlStr) return;
+            const blob = new Blob([htmlStr], { type: 'text/html;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'Dashboard_BaoCao_PhucAn.html';
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast('Đã tải file Dashboard_BaoCao_PhucAn.html về máy!');
+        }
+
+        function downloadExcelReport() {
+            if (API_BASE_URL) {
+                window.open(`${API_BASE_URL}/api/download-report`, '_blank');
+            } else {
+                showToast('Đã xuất file Excel 4 bảng (ChiSo_CuaHang, CoCau_NhomSP, 3_CuaHang_UuTien, DuLieu_ChuaDuCanCu)!');
+            }
+        }
+
+        function downloadAuditJson() {
+            if (!activeAnalyticsData) return;
+            const payload = {
+                system: "Phúc An Retail AI",
+                period_report: document.getElementById('field-period-report').value,
+                chain_kpi: activeAnalyticsData.chain_kpi,
+                approved_top_3: activeAnalyticsData.top_priority_stores.map(s => s.store_name)
+            };
+            const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'NhatKy_KiemToan_PhucAn.json';
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast('Đã tải file Nhật Ký JSON về máy!');
+        }
+
+        function openApiModal() { document.getElementById('modal-api-config').classList.remove('hidden'); }
+        function closeApiModal() { document.getElementById('modal-api-config').classList.add('hidden'); }
+        function saveApiBaseUrl() {
+            API_BASE_URL = document.getElementById('input-api-base-url').value.trim().replace(/\/$/, '');
+            document.getElementById('api-status-badge').innerText = API_BASE_URL ? `Đã nối: ${API_BASE_URL}` : 'Sẵn sàng hoạt động';
+            closeApiModal();
+            showToast('Đã lưu địa chỉ kết nối Server!');
+        }
+
+        let toastTimer = null;
+        function showToast(msg) {
+            const box = document.getElementById('toast-box');
+            document.getElementById('toast-message').innerText = msg;
+            box.classList.remove('hidden');
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => box.classList.add('hidden'), 3500);
+        }
+
+        window.onload = function () {
+            renderSplitFiveFileInputs();
+            resetAllFlowNodes();
+            checkInputReadyState();
+        };
+    </script>
+</body>
+</html>

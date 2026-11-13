@@ -1,0 +1,189 @@
+/* Neo-Pastel Modern Design System inspired by Reference Images */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600;1,700&display=swap');
+
+:root {
+    --bg-page: #F0F4F8;
+    --border-color: #1E293B;
+    --border-width: 1.5px;
+    --shadow-solid: 3px 3px 0px #1E293B;
+    --shadow-solid-lg: 4px 4px 0px #1E293B;
+    --shadow-solid-hover: 1px 1px 0px #1E293B;
+    
+    /* Soft Pastel Palette (Subtle & Elegant) */
+    --pastel-yellow: #FEF9C3;
+    --pastel-yellow-header: #FEF08A;
+    --pastel-cyan: #E0F2FE;
+    --pastel-mint: #DCFCE7;
+    --pastel-purple: #F3E8FF;
+    --pastel-purple-deep: #DDD6FE;
+    --pastel-pink: #FFE4E6;
+    --pastel-rose: #FECDD3;
+    --pastel-peach: #FFEDD5;
+    --pastel-blue: #DBEAFE;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    background-color: var(--bg-page);
+    color: #1E293B;
+    margin: 0;
+    padding: 0;
+}
+
+/* Serif Title Font for Hero Page */
+.font-hero-serif {
+    font-family: 'Playfair Display', Georgia, serif;
+}
+
+/* Neo-Pastel Card Box */
+.neo-card {
+    background-color: #FFFFFF;
+    border: var(--border-width) solid var(--border-color);
+    border-radius: 1.5rem; /* 24px */
+    box-shadow: var(--shadow-solid);
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    overflow: hidden;
+}
+.neo-card:hover {
+    box-shadow: var(--shadow-solid-lg);
+}
+
+.neo-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.65rem 1rem;
+    border-bottom: var(--border-width) solid var(--border-color);
+    font-weight: 700;
+    font-size: 0.75rem;
+    letter-spacing: 0.025em;
+}
+
+/* Mac OS Window 3-Dots */
+.mac-dots {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+.mac-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+}
+.mac-dot-red { background-color: #EF4444; }
+.mac-dot-yellow { background-color: #F59E0B; }
+.mac-dot-green { background-color: #10B981; }
+
+/* Neo-Buttons */
+.neo-btn {
+    border: var(--border-width) solid var(--border-color);
+    border-radius: 9999px; /* full pill */
+    font-weight: 700;
+    font-size: 0.75rem;
+    padding: 0.5rem 1.15rem;
+    box-shadow: 2px 2px 0px var(--border-color);
+    transition: all 0.15s ease;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+}
+.neo-btn:hover {
+    transform: translate(-1px, -1px);
+    box-shadow: 3px 3px 0px var(--border-color);
+}
+.neo-btn:active {
+    transform: translate(1px, 1px);
+    box-shadow: 1px 1px 0px var(--border-color);
+}
+
+.neo-btn-primary {
+    background-color: #6366F1;
+    color: #FFFFFF;
+}
+.neo-btn-yellow {
+    background-color: var(--pastel-yellow-header);
+    color: #1E293B;
+}
+.neo-btn-cyan {
+    background-color: #BAE6FD;
+    color: #0369A1;
+}
+.neo-btn-pink {
+    background-color: var(--pastel-rose);
+    color: #9F1239;
+}
+.neo-btn-white {
+    background-color: #FFFFFF;
+    color: #1E293B;
+}
+
+/* Stepper step circles */
+.neo-step-node {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: var(--border-width) solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 11px;
+    background-color: #FFFFFF;
+    box-shadow: 1px 1px 0px var(--border-color);
+    transition: all 0.2s ease;
+}
+.neo-step-node.active {
+    background-color: #6366F1;
+    color: #FFFFFF;
+    transform: scale(1.1);
+}
+.neo-step-node.completed {
+    background-color: #10B981;
+    color: #FFFFFF;
+}
+
+/* Citation Pill (from reference image CIT-001) */
+.cit-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.15rem 0.45rem;
+    border: 1px solid var(--border-color);
+    border-radius: 9999px;
+    font-size: 10px;
+    font-weight: 700;
+    font-family: monospace;
+    background-color: #E0F2FE;
+    color: #0369A1;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+::-webkit-scrollbar-track {
+    background: #F1F5F9;
+}
+::-webkit-scrollbar-thumb {
+    background: #CBD5E1;
+    border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #94A3B8;
+}
+
+/* Animations */
+@keyframes smoothFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-4px); }
+}
+.float-subtle {
+    animation: smoothFloat 4s ease-in-out infinite;
+}

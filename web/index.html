@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phúc An Retail Intelligence - AI Agent Phân Tích Kinh Doanh</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600;1,700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+</head>
+<body class="bg-[#F0F4F8] text-[#1E293B] antialiased">
+
+    <!-- ========================================================================= -->
+    <!-- 1. TRANG BÌA TRƯỚC (HERO COVER SECTION - THEO ĐÚNG MẪU ẢNH THỨ 2) -->
+    <!-- ========================================================================= -->
+    <section class="relative min-h-screen flex flex-col justify-between text-white overflow-hidden bg-slate-900" style="background: linear-gradient(rgba(15, 23, 42, 0.72), rgba(15, 23, 42, 0.88)), url('https://images.unsplash.com/photo-1519567241046-7f570eee3ce6?q=80&w=2000&auto=format&fit=crop'); background-size: cover; background-position: center;">
+        
+        <!-- Top Nav on Hero -->
+        <header class="max-w-7xl mx-auto w-full px-6 py-6 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <span class="font-extrabold text-xl tracking-wider text-white">PHÚC AN</span>
+                <span class="font-hero-serif italic text-sm tracking-widest text-amber-200/90 font-medium">RETAIL INTELLIGENCE</span>
+            </div>
+
+            <!-- Middle Navigation Links -->
+            <div class="hidden md:flex items-center space-x-8 text-xs font-semibold tracking-wide text-slate-300">
+                <a href="#dashboard-section" class="hover:text-white transition-colors">01. Chuẩn Hóa Dữ Liệu</a>
+                <a href="#dashboard-section" class="hover:text-white transition-colors">02. Đối Chiếu & HITL</a>
+                <a href="#dashboard-section" class="hover:text-white transition-colors">03. Kết Quả Chiến Lược</a>
+            </div>
+
+            <div class="flex items-center space-x-3">
+                <span class="px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 backdrop-blur-md">
+                    Gemini AI Active
+                </span>
+            </div>
+        </header>
+
+        <!-- Center Hero Typography (Inspired by Image 2) -->
+        <div class="max-w-4xl mx-auto px-6 text-center my-auto py-12 space-y-6">
+            <!-- Eyebrow -->
+            <div class="inline-flex items-center space-x-2 text-xs uppercase font-bold tracking-[0.25em] text-amber-300/90">
+                <span class="w-8 h-[1px] bg-amber-300/60"></span>
+                <span>ĐÁNH GIÁ HIỆU QUẢ KINH DOANH & ĐỀ XUẤT HỖ TRỢ</span>
+                <span class="w-8 h-[1px] bg-amber-300/60"></span>
+            </div>
+
+            <!-- Grand Headline -->
+            <h1 class="text-4xl sm:text-6xl lg:text-7xl font-hero-serif font-bold text-white tracking-tight leading-[1.12]">
+                Vượt Qua Mọi Giới Hạn,<br>
+                <span class="italic font-normal text-amber-200">Khẳng Định Vị Thế</span> Bán Lẻ
+            </h1>
+
+            <!-- Subtitle -->
+            <p class="max-w-2xl mx-auto text-sm sm:text-base text-slate-300 font-normal leading-relaxed">
+                Hệ thống AI Agent giải quyết toàn diện bài toán đối soát 60.000 dòng bán hàng & đổi trả cho Công ty Phúc An: 
+                thẩm định dữ liệu nguồn, loại trừ tăng trưởng ảo và nhận diện chính xác 3 cửa hàng cần hỗ trợ khẩn cấp.
+            </p>
+
+            <!-- CTA Buttons -->
+            <div class="flex flex-wrap items-center justify-center gap-4 pt-4">
+                <a href="#dashboard-section" class="px-7 py-3.5 rounded-2xl bg-amber-400 hover:bg-amber-300 text-slate-900 font-extrabold text-xs uppercase tracking-wider shadow-lg shadow-amber-400/20 transition-all transform hover:-translate-y-0.5 flex items-center space-x-2">
+                    <span>BẮT ĐẦU QUY TRÌNH ĐÁNH GIÁ</span>
+                    <span>↓</span>
+                </a>
+                <button id="hero-btn-quick-sample" class="px-6 py-3.5 rounded-2xl bg-white/10 hover:bg-white/20 border border-white/30 text-white font-extrabold text-xs uppercase tracking-wider backdrop-blur-md transition-all">
+                    Nạp Dữ Liệu Mẫu Chuỗi 18 Cửa Hàng
+                </button>
+            </div>
+        </div>
+
+        <!-- Scroll Down Hint -->
+        <div class="text-center pb-8 pt-4">
+            <a href="#dashboard-section" class="inline-flex flex-col items-center text-[11px] font-bold tracking-widest text-slate-400 hover:text-white uppercase space-y-1 transition-colors">
+                <span>Cuộn Xuống Để Khám Phá</span>
+                <span class="animate-bounce text-base">⌄</span>
+            </a>
+        </div>
+    </section>
+
+
+    <!-- ========================================================================= -->
+    <!-- 2. WORKSPACE DASHBOARD (THEO ĐÚNG MẪU ẢNH THỨ NHẤT - NEO-PASTEL SOFT UI) -->
+    <!-- ========================================================================= -->
+    <div id="dashboard-section" class="min-h-screen py-8 px-4 sm:px-6 lg:px-8 max-w-[1600px] mx-auto space-y-6">
+
+        <!-- Top Header Bar -->
+        <div class="neo-card p-3.5 flex flex-wrap items-center justify-between gap-4 bg-white">
+            <div class="flex items-center space-x-3">
+                <div class="w-9 h-9 rounded-xl bg-indigo-600 flex items-center justify-center text-white font-black text-sm border-2 border-slate-900 shadow-[2px_2px_0px_#1e293b]">
+                    PA
+                </div>
+                <div>
+                    <div class="flex items-center space-x-2">
+                        <span class="font-extrabold text-sm text-slate-900">AI301 - Phúc An Retail</span>
+                        <span class="px-2 py-0.5 text-[10px] font-extrabold bg-[#FEF08A] text-slate-900 border border-slate-900 rounded-full">Đề 07</span>
+                        <span class="px-2 py-0.5 text-[10px] font-bold bg-[#CCFBF1] text-teal-900 border border-slate-900 rounded-full">Gemini 1.5 Flash Active</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right System Badges and Export -->
+            <div class="flex items-center space-x-2.5">
+                <span class="hidden sm:inline-block font-mono text-[11px] font-bold px-3 py-1 bg-slate-100 border border-slate-900 rounded-full">
+                    PA-202611-60K-RECON
+                </span>
+                <button id="btn-export-excel" class="neo-btn neo-btn-pink">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                    <span>Xuất Báo Cáo Excel</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Top Navigation Tabs (Pill Buttons with Borders - Like Image 1) -->
+        <div class="flex flex-wrap items-center gap-2">
+            <button class="nav-pill-btn neo-btn neo-btn-cyan active" data-tab="tab-overview">
+                🏆 Kết Quả & KPIs
+            </button>
+            <button class="nav-pill-btn neo-btn neo-btn-white" data-tab="tab-priority">
+                🎯 Top 3 Ưu Tiên
+            </button>
+            <button class="nav-pill-btn neo-btn neo-btn-white" data-tab="tab-stores-table">
+                📊 Bảng 18 Cửa Hàng
+            </button>
+            <button class="nav-pill-btn neo-btn neo-btn-white" data-tab="tab-quarantine">
+                ⚠️ Lỗi & Dữ Liệu Cách Ly (<span id="badge-quarantine-count">0</span>)
+            </button>
+            <button class="nav-pill-btn neo-btn neo-btn-white" data-tab="tab-ai-chat">
+                ✨ Trợ Lý Gemini AI
+            </button>
+            <button class="nav-pill-btn neo-btn neo-btn-white" data-tab="tab-audit-trace">
+                ⚙️ Nhật Ký Truy Vết
+            </button>
+        </div>
+
+        <!-- MAIN GRID LAYOUT (Left Side Controls + Right Analytics Content) -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+
+            <!-- ========================================== -->
+            <!-- LEFT COLUMN (4 COLS): CONTROLS & PIPELINE -->
+            <!-- ========================================== -->
+            <div class="lg:col-span-4 space-y-5">
+
+                <!-- CARD 1: LUỒNG 8 BƯỚC PHÚC AN (Pastel Yellow Header) -->
+                <div class="neo-card">
+                    <div class="neo-card-header bg-[#FEF9C3]">
+                        <div class="flex items-center space-x-2">
+                            <div class="mac-dots">
+                                <span class="mac-dot mac-dot-red"></span>
+                                <span class="mac-dot mac-dot-yellow"></span>
+                                <span class="mac-dot mac-dot-green"></span>
+                            </div>
+                            <span class="font-extrabold text-slate-900">Luồng 8 Bước Phúc An</span>
+                        </div>
+                        <span id="current-step-label" class="px-2 py-0.5 text-[10px] font-bold bg-white border border-slate-900 rounded-full">
+                            Bước 1: Tiếp nhận
+                        </span>
+                    </div>
+
+                    <div class="p-4 space-y-4">
+                        <!-- Stepper Nodes 1 to 8 -->
+                        <div class="flex items-center justify-between px-1 py-2" id="stepper-track">
+                            <div class="neo-step-node active" data-step="1" title="B1: Tiếp nhận">1</div>
+                            <div class="h-[2px] bg-slate-900 flex-1 mx-1"></div>
+                            <div class="neo-step-node" data-step="2" title="B2: Làm sạch">2</div>
+                            <div class="h-[2px] bg-slate-900 flex-1 mx-1"></div>
+                            <div class="neo-step-node" data-step="3" title="B3: Tính chỉ số">3</div>
+                            <div class="h-[2px] bg-slate-900 flex-1 mx-1"></div>
+                            <div class="neo-step-node" data-step="4" title="B4: Phân tích">4</div>
+                            <div class="h-[2px] bg-slate-900 flex-1 mx-1"></div>
+                            <div class="neo-step-node" data-step="5" title="B5: Kiểm duyệt">5</div>
+                            <div class="h-[2px] bg-slate-900 flex-1 mx-1"></div>
+                            <div class="neo-step-node" data-step="6" title="B6: Quyết định">6</div>
+                            <div class="h-[2px] bg-slate-900 flex-1 mx-1"></div>
+                            <div class="neo-step-node" data-step="7" title="B7: Báo cáo">7</div>
+                            <div class="h-[2px] bg-slate-900 flex-1 mx-1"></div>
+                            <div class="neo-step-node" data-step="8" title="B8: Bàn giao">8</div>
+                        </div>
+
+                        <!-- Run Button -->
+                        <button id="btn-run-pipeline" class="neo-btn neo-btn-primary w-full py-3 text-xs tracking-wider uppercase font-black text-white">
+                            ▶ CHẠY AI AGENT (LÀM SẠCH & ĐỐI SOÁT)
+                        </button>
+
+                        <!-- Engine Status Box (Like in Image 1) -->
+                        <div class="p-3 rounded-2xl bg-slate-50 border border-slate-900 text-xs text-slate-700 leading-relaxed font-medium">
+                            <p class="font-extrabold text-slate-900 mb-0.5">Mô hình AI: Gemini 1.5 Flash</p>
+                            <span>API Key đã kích hoạt, sẵn sàng đối chiếu 60.000 dòng bán hàng & đổi trả.</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CARD 2: DỮ LIỆU VÀO (Pastel Cyan Header) -->
+                <div class="neo-card">
+                    <div class="neo-card-header bg-[#E0F2FE]">
+                        <div class="flex items-center space-x-2">
+                            <div class="mac-dots">
+                                <span class="mac-dot mac-dot-red"></span>
+                                <span class="mac-dot mac-dot-yellow"></span>
+                                <span class="mac-dot mac-dot-green"></span>
+                            </div>
+                            <span class="font-extrabold text-slate-900">Dữ liệu vào & Nguồn</span>
+                        </div>
+                        <button id="btn-reset-data" class="text-[10px] font-bold text-slate-600 hover:text-slate-900 underline">Reset</button>
+                    </div>
+
+                    <div class="p-4 space-y-3.5">
+                        <!-- Quick Dataset Selection Pills (Like in Image 1) -->
+                        <div class="grid grid-cols-3 gap-2">
+                            <button id="btn-load-sample" class="neo-btn neo-btn-cyan text-[11px] py-1.5 px-2">
+                                Mẫu 1 (Chuỗi 18)
+                            </button>
+                            <button id="btn-load-sample-2" class="neo-btn neo-btn-yellow text-[11px] py-1.5 px-2">
+                                Mẫu 2 (Thiếu giá)
+                            </button>
+                            <button id="btn-load-sample-3" class="neo-btn neo-btn-pink text-[11px] py-1.5 px-2">
+                                Mẫu 3 (Ranh giới)
+                            </button>
+                        </div>
+
+                        <!-- Source Switch: File vs Google Sheets -->
+                        <div class="grid grid-cols-2 gap-2 p-1 bg-slate-100 rounded-full border border-slate-900 text-xs font-bold text-center">
+                            <button id="tab-btn-files" class="py-1 rounded-full bg-white shadow-[1px_1px_0px_#1e293b]">Tệp Tin (File)</button>
+                            <button id="tab-btn-gsheet" class="py-1 rounded-full text-slate-600">Google Sheet</button>
+                        </div>
+
+                        <!-- File Ingestion Area -->
+                        <div id="panel-files" class="space-y-2">
+                            <div class="p-2.5 bg-white rounded-xl border border-slate-900 text-xs space-y-1">
+                                <span class="block font-bold text-[11px] text-slate-700">Tệp Giao Dịch & Đổi Trả:</span>
+                                <input type="file" id="input-tx-file" accept=".csv, .xlsx, .xls" class="text-[11px] text-slate-600 w-full file:mr-2 file:py-1 file:px-2.5 file:rounded-full file:border file:border-slate-900 file:text-[10px] file:font-bold file:bg-[#FEF9C3] file:text-slate-900">
+                            </div>
+                        </div>
+
+                        <!-- Google Sheet Input Area -->
+                        <div id="panel-gsheet" class="hidden space-y-2">
+                            <input type="text" id="gsheet-tx-url" placeholder="https://docs.google.com/spreadsheets/d/..." class="w-full bg-white border border-slate-900 rounded-xl px-3 py-2 text-xs focus:outline-none">
+                        </div>
+
+                        <!-- Period inputs -->
+                        <div class="flex items-center justify-between text-xs font-bold pt-1">
+                            <span>Kỳ báo cáo: <input type="text" id="input-period-rep" value="2026-10" class="w-20 px-2 py-0.5 rounded-lg border border-slate-900 bg-white text-center"></span>
+                            <span>Kỳ so sánh: <input type="text" id="input-period-cmp" value="2026-09" class="w-20 px-2 py-0.5 rounded-lg border border-slate-900 bg-white text-center"></span>
+                        </div>
+
+                        <div class="pt-2 border-t border-slate-200 flex items-center justify-between text-[11px] text-slate-600 font-semibold">
+                            <span>Đang dùng: <b id="current-dataset-tag" class="text-indigo-700">Mẫu Chuỗi 18 Cửa Hàng</b></span>
+                            <span class="cit-badge">25.824 dòng</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- CARD 3: CỔNG KIỂM DUYỆT CON NGƯỜI (Pastel Coral/Rose Header - Like Image 1) -->
+                <div class="neo-card" id="hitl-control-card">
+                    <div class="neo-card-header bg-[#FECDD3]">
+                        <div class="flex items-center space-x-2">
+                            <div class="mac-dots">
+                                <span class="mac-dot mac-dot-red"></span>
+                                <span class="mac-dot mac-dot-yellow"></span>
+                                <span class="mac-dot mac-dot-green"></span>
+                            </div>
+                            <span class="font-extrabold text-slate-900">Duyệt Sát Ranh Giới (HITL)</span>
+                        </div>
+                        <span class="px-2 py-0.5 text-[10px] font-bold bg-white border border-slate-900 rounded-full">Cần duyệt #2</span>
+                    </div>
+
+                    <div class="p-4 space-y-3 text-xs">
+                        <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-900 leading-relaxed text-slate-700 font-medium">
+                            <b class="text-slate-900">Sát ranh giới xếp hạng:</b> Hà Đông (hụt 38.8% chỉ tiêu) & Nha Trang (đổi trả 8.6%). Cần Giám đốc kiểm tra chiến lược trước khi chốt hỗ trợ.
+                        </div>
+
+                        <input type="text" id="director-input-notes" placeholder="Ghi chú duyệt của Giám đốc..." class="w-full bg-white border border-slate-900 rounded-xl px-3 py-2 text-xs focus:outline-none">
+
+                        <div class="grid grid-cols-2 gap-2 pt-1">
+                            <button id="btn-reject-step5" class="neo-btn neo-btn-pink py-2 w-full text-xs font-bold">
+                                ✕ Bác Bỏ
+                            </button>
+                            <button id="btn-approve-step6" class="neo-btn neo-btn-cyan py-2 w-full text-xs font-bold">
+                                ✓ Duyệt & Xuất
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+
+            <!-- ========================================== -->
+            <!-- RIGHT COLUMN (8 COLS): DASHBOARD & RESULTS -->
+            <!-- ========================================== -->
+            <div class="lg:col-span-8 space-y-6">
+
+                <!-- 3 CARDS TOP ROW (Priority #1, Priority #2, Summary - Exact Layout from Image 1) -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+
+                    <!-- CARD ƯU TIÊN #1 (Pastel Lilac / Purple) -->
+                    <div class="neo-card bg-[#F3E8FF]">
+                        <div class="neo-card-header bg-[#DDD6FE]">
+                            <div class="flex items-center space-x-1.5">
+                                <div class="mac-dots">
+                                    <span class="mac-dot mac-dot-red"></span>
+                                    <span class="mac-dot mac-dot-yellow"></span>
+                                    <span class="mac-dot mac-dot-green"></span>
+                                </div>
+                                <span class="font-extrabold text-slate-900">🚨 ƯU TIÊN #1</span>
+                            </div>
+                            <span class="px-2 py-0.5 text-[10px] font-mono font-black bg-white border border-slate-900 rounded-full" id="p1-score">
+                                8.67/10
+                            </span>
+                        </div>
+                        <div class="p-4 space-y-2.5">
+                            <h4 class="text-lg font-black text-slate-900" id="p1-name">Phúc An Hà Đông</h4>
+                            <p class="text-xs text-slate-700 font-medium leading-relaxed" id="p1-desc">
+                                Doanh thu thuần tụt giảm mạnh nhất chuỗi, chỉ đạt 61.2% kế hoạch; tăng trưởng MoM âm (-38.2%). Đề xuất kích cầu cuối tuần.
+                            </p>
+                            <div class="pt-2 flex items-center justify-between text-[11px] font-bold text-slate-600">
+                                <span id="p1-rev">DT: 321.450.000 ₫</span>
+                                <span class="cit-badge">CIT-001</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CARD ƯU TIÊN #2 (Pastel Yellow / Cream) -->
+                    <div class="neo-card bg-[#FEFCE8]">
+                        <div class="neo-card-header bg-[#FEF08A]">
+                            <div class="flex items-center space-x-1.5">
+                                <div class="mac-dots">
+                                    <span class="mac-dot mac-dot-red"></span>
+                                    <span class="mac-dot mac-dot-yellow"></span>
+                                    <span class="mac-dot mac-dot-green"></span>
+                                </div>
+                                <span class="font-extrabold text-slate-900">⚡ ƯU TIÊN #2</span>
+                            </div>
+                            <span class="px-2 py-0.5 text-[10px] font-mono font-black bg-white border border-slate-900 rounded-full" id="p2-score">
+                                6.67/10
+                            </span>
+                        </div>
+                        <div class="p-4 space-y-2.5">
+                            <h4 class="text-lg font-black text-slate-900" id="p2-name">Phúc An Nha Trang</h4>
+                            <p class="text-xs text-slate-700 font-medium leading-relaxed" id="p2-desc">
+                                Tỷ lệ đổi trả hàng 8.6% (gấp 4 lần benchmark chuỗi 2.2%). Tập trung nhóm Điện gia dụng; cần thanh tra chất lượng kho.
+                            </p>
+                            <div class="pt-2 flex items-center justify-between text-[11px] font-bold text-slate-600">
+                                <span id="p2-rev">Đổi trả: 8.6%</span>
+                                <span class="cit-badge">CIT-009</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CARD TÓM TẮT & ƯU TIÊN #3 (Pastel Rose / Pink) -->
+                    <div class="neo-card bg-[#FFF1F2]">
+                        <div class="neo-card-header bg-[#FECDD3]">
+                            <div class="flex items-center space-x-1.5">
+                                <div class="mac-dots">
+                                    <span class="mac-dot mac-dot-red"></span>
+                                    <span class="mac-dot mac-dot-yellow"></span>
+                                    <span class="mac-dot mac-dot-green"></span>
+                                </div>
+                                <span class="font-extrabold text-slate-900">📉 TÓM TẮT CHUỖI</span>
+                            </div>
+                            <span class="px-2 py-0.5 text-[10px] font-mono font-black bg-white border border-slate-900 rounded-full">
+                                18 CH
+                            </span>
+                        </div>
+                        <div class="p-4 space-y-2.5">
+                            <div class="flex items-center space-x-1.5">
+                                <span class="px-2 py-0.5 text-[10px] font-bold bg-[#EF4444] text-white border border-slate-900 rounded-full">Gò Vấp (Biên 22%)</span>
+                                <span class="px-2 py-0.5 text-[10px] font-bold bg-[#DDD6FE] text-purple-900 border border-slate-900 rounded-full">Sát điểm</span>
+                            </div>
+                            <div class="text-xs space-y-1 font-semibold text-slate-700 pt-1">
+                                <p>Doanh thu: <b class="text-slate-900" id="kpi-net-rev">10.436.575.000 ₫</b></p>
+                                <p>Lợi nhuận gộp: <b class="text-emerald-700" id="kpi-gross-profit">3.738.163.000 ₫</b></p>
+                                <p>Biên LN trung bình: <b class="text-purple-700" id="kpi-avg-margin">35.82%</b></p>
+                            </div>
+                            <div class="pt-1 flex items-center justify-between text-[11px] font-bold text-slate-600">
+                                <span>Đủ dữ liệu:</span>
+                                <span>18/18 cửa hàng</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+
+                <!-- TAB CONTENT: BẢNG SO SÁNH 18 CỬA HÀNG (Exact Table from Image 1) -->
+                <div class="neo-card" id="pane-stores-table">
+                    <div class="neo-card-header bg-white">
+                        <div class="flex items-center space-x-2">
+                            <div class="mac-dots">
+                                <span class="mac-dot mac-dot-red"></span>
+                                <span class="mac-dot mac-dot-yellow"></span>
+                                <span class="mac-dot mac-dot-green"></span>
+                            </div>
+                            <span class="font-extrabold text-slate-900 text-sm">Bảng So Sánh 18 Cửa Hàng Bán Lẻ Phúc An</span>
+                        </div>
+                        <div class="flex items-center space-x-2 text-xs">
+                            <span class="text-slate-500">Bấm</span>
+                            <span class="cit-badge">CIT</span>
+                            <span class="text-slate-500">xem nguồn gốc</span>
+                        </div>
+                    </div>
+
+                    <!-- Filters Bar -->
+                    <div class="p-3 bg-slate-50 border-b border-slate-900 flex flex-wrap items-center justify-between gap-3 text-xs">
+                        <div class="flex items-center space-x-2">
+                            <input type="text" id="search-store-input" placeholder="Tìm kiếm cửa hàng..." class="px-3 py-1.5 rounded-full border border-slate-900 bg-white focus:outline-none w-56 text-xs font-medium">
+                            <select id="filter-region-select" class="px-3 py-1.5 rounded-full border border-slate-900 bg-white font-bold text-xs">
+                                <option value="ALL">Tất cả khu vực</option>
+                                <option value="Miền Bắc">Miền Bắc</option>
+                                <option value="Miền Trung">Miền Trung</option>
+                                <option value="Miền Nam">Miền Nam</option>
+                            </select>
+                        </div>
+                        <span class="font-bold text-slate-600" id="stores-table-count">Hiển thị 18/18 cửa hàng</span>
+                    </div>
+
+                    <!-- Table (Pastel Yellow Header Row like Image 1) -->
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs border-collapse">
+                            <thead class="bg-[#FEF08A] text-slate-900 font-black border-b border-slate-900 uppercase text-[10px] tracking-wider">
+                                <tr>
+                                    <th class="p-3 border-r border-slate-900">Cửa Hàng</th>
+                                    <th class="p-3 border-r border-slate-900 text-center">Doanh Thu Thuần</th>
+                                    <th class="p-3 border-r border-slate-900 text-center">Lợi Nhuận Gộp</th>
+                                    <th class="p-3 border-r border-slate-900 text-center">Biên LN</th>
+                                    <th class="p-3 border-r border-slate-900 text-center">Đạt KH</th>
+                                    <th class="p-3 border-r border-slate-900 text-center">Điểm Hỗ Trợ</th>
+                                    <th class="p-3 text-center">Kết Quả & Nguồn</th>
+                                </tr>
+                            </thead>
+                            <tbody id="stores-table-body" class="divide-y divide-slate-200 font-semibold bg-white">
+                                <!-- Populated by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="p-3 bg-slate-50 border-t border-slate-900 text-center text-xs font-bold text-slate-700">
+                        <a href="javascript:void(0)" class="hover:underline">👁 Xem đầy đủ chi tiết 18 địa bàn chuỗi Phúc An</a>
+                    </div>
+                </div>
+
+                <!-- CHARTS ROW (Clean Neo-Pastel Style) -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div class="neo-card p-4 space-y-3">
+                        <div class="flex items-center justify-between border-b border-slate-200 pb-2">
+                            <h4 class="text-xs font-black uppercase text-slate-900">Doanh Thu vs Chỉ Tiêu (18 Cửa Hàng)</h4>
+                            <span class="cit-badge">Triệu ₫</span>
+                        </div>
+                        <div class="h-64">
+                            <canvas id="chart-stores-revenue"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="neo-card p-4 space-y-3">
+                        <div class="flex items-center justify-between border-b border-slate-200 pb-2">
+                            <h4 class="text-xs font-black uppercase text-slate-900">Cơ Cấu Ngành Hàng & Biên Lợi Nhuận</h4>
+                            <span class="cit-badge">5 Nhóm Hàng</span>
+                        </div>
+                        <div class="h-64">
+                            <canvas id="chart-category-breakdown"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- GEMINI AI INTERACTIVE CHAT CARD (Neo-Pastel Style) -->
+                <div class="neo-card" id="pane-ai-chat">
+                    <div class="neo-card-header bg-[#DDD6FE]">
+                        <div class="flex items-center space-x-2">
+                            <div class="mac-dots">
+                                <span class="mac-dot mac-dot-red"></span>
+                                <span class="mac-dot mac-dot-yellow"></span>
+                                <span class="mac-dot mac-dot-green"></span>
+                            </div>
+                            <span class="font-extrabold text-slate-900">Trợ Lý Chiến Lược Bán Lẻ Gemini AI (API Key Active)</span>
+                        </div>
+                        <span class="px-2 py-0.5 text-[10px] font-bold bg-white border border-slate-900 rounded-full">v1.5 Flash</span>
+                    </div>
+
+                    <div class="p-4 space-y-3">
+                        <div class="bg-slate-50 rounded-2xl border border-slate-900 p-3 min-h-[160px] max-h-[300px] overflow-y-auto space-y-2.5" id="ai-chat-thread">
+                            <div class="chat-bubble-ai text-xs text-slate-800">
+                                <b class="text-indigo-700">🤖 Gemini Retail Advisor:</b> Xin chào Giám đốc! Tôi đã hoàn tất đối soát số liệu 18 cửa hàng. Giám đốc muốn giải trình sâu về cửa hàng nào (Hà Đông, Nha Trang, Gò Vấp)?
+                            </div>
+                        </div>
+
+                        <!-- Prompt Pills -->
+                        <div class="flex flex-wrap gap-2 text-xs">
+                            <button class="ai-prompt-pill neo-btn neo-btn-white py-1 px-3 text-[11px]">
+                                🔍 Vì sao Phúc An Hà Đông đạt doanh thu thấp nhất?
+                            </button>
+                            <button class="ai-prompt-pill neo-btn neo-btn-white py-1 px-3 text-[11px]">
+                                📦 Đánh giá tỷ lệ đổi trả tại Phúc An Nha Trang
+                            </button>
+                            <button class="ai-prompt-pill neo-btn neo-btn-white py-1 px-3 text-[11px]">
+                                💡 Nhóm hàng nào có biên lợi nhuận gộp cao nhất?
+                            </button>
+                        </div>
+
+                        <!-- Chat Input -->
+                        <div class="flex items-center space-x-2 pt-1">
+                            <input type="text" id="ai-query-input" placeholder="Gõ câu hỏi về hiệu quả kinh doanh của chuỗi..." class="flex-1 bg-white border border-slate-900 rounded-full px-4 py-2 text-xs focus:outline-none">
+                            <button id="btn-ask-ai" class="neo-btn neo-btn-primary px-5 py-2 text-xs font-black">
+                                GỬI HỎI
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AUDIT & QUARANTINE SECTION (Collapsible) -->
+                <div class="neo-card" id="pane-quarantine">
+                    <div class="neo-card-header bg-[#FFE4E6]">
+                        <div class="flex items-center space-x-2">
+                            <div class="mac-dots">
+                                <span class="mac-dot mac-dot-red"></span>
+                                <span class="mac-dot mac-dot-yellow"></span>
+                                <span class="mac-dot mac-dot-green"></span>
+                            </div>
+                            <span class="font-extrabold text-slate-900">Bảng Dữ Liệu Cách Ly (Chưa Đủ Căn Cứ Đưa Vào Tính)</span>
+                        </div>
+                        <span class="px-2 py-0.5 text-[10px] font-bold bg-white border border-slate-900 rounded-full" id="quarantine-total-badge">183 bản ghi</span>
+                    </div>
+
+                    <div class="overflow-x-auto max-h-72">
+                        <table class="w-full text-left text-xs border-collapse">
+                            <thead class="bg-slate-100 text-slate-900 font-bold border-b border-slate-900 sticky top-0 text-[10px]">
+                                <tr>
+                                    <th class="p-2.5">Mã ID</th>
+                                    <th class="p-2.5">Tệp Nguồn</th>
+                                    <th class="p-2.5">Mã Đơn / Dòng</th>
+                                    <th class="p-2.5">Nguyên Nhân Cách Ly</th>
+                                    <th class="p-2.5">Thời Điểm</th>
+                                </tr>
+                            </thead>
+                            <tbody id="quarantine-table-body" class="divide-y divide-slate-200 font-medium">
+                                <!-- Populated by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Terminal Lineage Modal or Collapsible Log -->
+    <div class="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 pb-12">
+        <div class="neo-card bg-slate-900 text-emerald-400 p-4 font-mono text-xs space-y-1 rounded-2xl max-h-48 overflow-y-auto" id="audit-log-terminal">
+            <p class="text-slate-400">// Hệ thống AI Agent Phúc An Retail Chain v2.0 sẵn sàng...</p>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
